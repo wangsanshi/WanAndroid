@@ -1,0 +1,117 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/color_F3F7FA</item>
+    </style>
+
+    <style name="AppTheme.Login" parent="AppTheme">
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+
+    <style name="AppTheme.Detail" parent="AppTheme">
+        <item name="android:windowBackground">@color/white</item>
+        <item name="colorPrimaryDark">@color/color_EBEBEB</item>
+    </style>
+
+    <style name="AppTheme.History" parent="AppTheme">
+        <item name="colorPrimaryDark">@color/color_EBEBEB</item>
+    </style>
+
+    <style name="AppTheme.UserInfo" parent="AppTheme">
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="AppTheme.Coin" parent="AppTheme">
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+
+    <style name="TextAppearance.UserInfo.Toolbar.Text" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TextAppearance.Coin.Toolbar.Text" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="BottomSheetWhiteBackground" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_bottom_sheet_white_dialog</item>
+    </style>
+
+    <style name="BaseBottomSheetWhiteDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="bottomSheetStyle">@style/BottomSheetWhiteBackground</item>
+    </style>
+
+    <style name="BottomSheetDialogThemeWhite" parent="@style/BaseBottomSheetWhiteDialog" />
+
+    <style name="BottomSheetDialogThemeWhite.TextView">
+        <item name="android:textSize">@dimen/bottom_sheet_text_size</item>
+        <item name="android:drawablePadding">@dimen/bottom_sheet_drawable_padding</item>
+        <item name="android:textColor">@color/color_999999</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">@dimen/zero</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="TabLayoutStyle">
+        <item name="tabIndicatorFullWidth">true</item>
+        <item name="tabIndicatorColor">@color/color_tab_indicator</item>
+        <item name="tabIndicatorHeight">2dp</item>
+        <item name="tabMode">fixed</item>
+        <item name="tabSelectedTextColor">@color/color_tab_selected_text_color</item>
+        <item name="tabTextColor">@color/color_tab_unselected_text_color</item>
+        <item name="tabTextAppearance">@android:style/TextAppearance.Widget.TabWidget</item>
+    </style>
+
+    <style name="TabLayoutStyle.UserInfo" parent="TabLayoutStyle">
+        <item name="tabIndicatorFullWidth">false</item>
+        <item name="tabMode">fixed</item>
+        <item name="tabIndicatorColor">@color/colorPrimary</item>
+        <item name="tabTextColor">@color/color_333333</item>
+        <item name="tabSelectedTextColor">@color/colorPrimary</item>
+        <item name="tabBackground">@color/white</item>
+    </style>
+
+    <style name="TodoRadioButtonStyle">
+        <item name="android:button">@null</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingEnd">15dp</item>
+        <item name="android:textColor">@color/rbtn_textcolor</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="AppTheme.UserInfo.Text1">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textSize">19sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:text">0</item>
+    </style>
+
+    <style name="AppTheme.UserInfo.Text2">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">#99FFFFFF</item>
+    </style>
+
+    <style name="FabLableStyle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/bg_fab_label_shape</item>
+    </style>
+
+    <style name="AppTheme.ToolbarTextStyle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">19sp</item>
+    </style>
+</resources>

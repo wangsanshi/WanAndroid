@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#673AB7</color>
+    <color name="colorPrimaryDark">#512DA8</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccentTranslucent">#F8BBD0</color>
+
+    <color name="colorAccentShadow">#99FF4081</color>
+    <color name="colorPrimaryShadow">#99673AB7</color>
+    <color name="color_DDDDDD">#DDDDDD</color>
+    <color name="color_EEEEEE">#EEEEEE</color>
+    <color name="color_333333">#333333</color>
+    <color name="color_666666">#666666</color>
+    <color name="color_999999">#999999</color>
+    <color name="color_F3F7FA">#F3F7FA</color>
+    <color name="white">@android:color/white</color>
+    <color name="black">@android:color/black</color>
+    <color name="textColor1">@color/color_333333</color>
+    <color name="textColor2">@color/color_666666</color>
+    <color name="textColor3">@color/color_999999</color>
+    <color name="color_EBEBEB">#EBEBEB</color>
+    <color name="color_CCFFFFFF">#CCFFFFFF</color>
+    <color name="black_semi_transparent">#B2000000</color>
+    <color name="white_pressed">#f1f1f1</color>
+
+    <color name="color_tab_selected_text_color">@color/white</color>
+    <color name="color_tab_unselected_text_color">#99FFFFFF</color>
+    <color name="color_tab_indicator">@color/white</color>
+
+    <color name="color_todo_priority_normal">#4CAF50</color>
+    <color name="color_todo_priority_important">#FDBA2C</color>
+    <color name="color_todo_priority_serious">#F44336</color>
+    <color name="color_todo_type_study">#4CAF50</color>
+    <color name="color_todo_type_life">#FDBA2C</color>
+    <color name="color_todo_type_work">#F44336</color>
+    <color name="color_todo_type_other">#2196F3</color>
+
+    <color name="color_tip">#FDBA2C</color>
+    <color name="color_article_type_share">#4CAF50</color>
+    <color name="color_article_type_publish">#FF9800</color>
+</resources>

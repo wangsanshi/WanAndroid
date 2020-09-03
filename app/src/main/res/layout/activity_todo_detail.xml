@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="all">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/llRoot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/toolbar"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/ic_back_black">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/bottom_tab_todo"
+                android:textColor="@color/black"
+                android:textSize="19sp" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:textColor="@color/color_666666"
+            android:textSize="11sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            tools:text="2020.07.29  农历六月初九   周三" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/finishSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layoutDirection="ltr"
+            android:text="@string/todo_unfinish"
+            android:textColor="@color/todo_switch_textcolor"
+            android:textSize="13sp"
+            android:visibility="gone"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tvDate"
+            app:layout_constraintRight_toRightOf="parent"
+            app:switchPadding="8dp"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="20dp"
+            android:background="@null"
+            android:hint="@string/todo_title_hint"
+            android:imeOptions="actionNext"
+            android:inputType="text"
+            android:maxLines="1"
+            android:nextFocusForward="@id/etContent"
+            android:textSize="15sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvDate" />
+
+        <View
+            android:id="@+id/line1"
+            android:layout_width="0dp"
+            android:layout_height="2px"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="@color/color_DDDDDD"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etTitle" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etContent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="left|top"
+            android:hint="@string/todo_content_hint"
+            android:imeOptions="actionNone"
+            android:inputType="textMultiLine"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toTopOf="@+id/line2"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/line1" />
+
+        <View
+            android:id="@+id/line2"
+            android:layout_width="0dp"
+            android:layout_height="2px"
+            android:layout_margin="15dp"
+            android:background="@color/color_DDDDDD"
+            app:layout_constraintBottom_toTopOf="@+id/tvPriority"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:id="@+id/tvPriority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="10dp"
+            android:text="优先级"
+            android:textColor="@color/colorAccent"
+            android:textSize="9sp"
+            app:layout_constraintBottom_toTopOf="@+id/rg1"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <RadioGroup
+            android:id="@+id/rg1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/tvType"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/rbtnPriorityNormal"
+                style="@style/TodoRadioButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_rbtn_todo_one_selector"
+                android:text="@string/todo_priority_normal" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/rbtnPriorityImportant"
+                style="@style/TodoRadioButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/bg_rbtn_todo_two_selector"
+                android:text="@string/todo_priority_important" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/rbtnPrioritySerious"
+                style="@style/TodoRadioButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/bg_rbtn_todo_three_selector"
+                android:text="@string/todo_priority_serious" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/tvType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="10dp"
+            android:text="类型"
+            android:textColor="@color/colorAccent"
+            android:textSize="9sp"
+            app:layout_constraintBottom_toTopOf="@+id/rg2"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <RadioGroup
+            android:id="@+id/rg2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/rbtnTypeStudy"
+                style="@style/TodoRadioButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_rbtn_todo_one_selector"
+                android:text="@string/todo_type_study" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/rbtnTypeLife"
+                style="@style/TodoRadioButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/bg_rbtn_todo_two_selector"
+                android:text="@string/todo_type_life" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/rbtnTypeWork"
+                style="@style/TodoRadioButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/bg_rbtn_todo_three_selector"
+                android:text="@string/todo_type_work" />
+
+        </RadioGroup>
+
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/progressBar"
+            style="?android:progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.3" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

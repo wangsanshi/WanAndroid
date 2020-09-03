@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme.Login" parent="AppTheme">
+        <item name="android:windowBackground">@color/white</item>
+        <item name="colorPrimaryDark">@color/color_F3F7FA</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="AppTheme.Register" parent="AppTheme.Login" />
+
+    <style name="AppTheme.Detail" parent="AppTheme">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="colorPrimaryDark">@color/color_EBEBEB</item>
+    </style>
+
+    <style name="AppTheme.History" parent="AppTheme">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="colorPrimaryDark">@color/color_EBEBEB</item>
+    </style>
+
+    <style name="MaterialEditTextStyle">
+        <item name="met_clearButton">true</item>
+        <item name="met_floatingLabel">highlight</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/textColor1</item>
+        <item name="android:textColorHint">@color/textColor3</item>
+        <item name="met_floatingLabelAlwaysShown">false</item>
+        <item name="met_singleLineEllipsis">true</item>
+    </style>
+</resources>

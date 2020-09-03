@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvShareWechat"
+            style="@style/BottomSheetDialogThemeWhite.TextView"
+            android:drawableTop="@drawable/share_wechat"
+            android:text="@string/wechat" />
+
+        <TextView
+            android:id="@+id/tvShareFriendCircle"
+            style="@style/BottomSheetDialogThemeWhite.TextView"
+            android:drawableTop="@drawable/share_circle"
+            android:text="@string/friends" />
+
+        <TextView
+            android:id="@+id/tvShareOther"
+            style="@style/BottomSheetDialogThemeWhite.TextView"
+            android:drawableTop="@drawable/share_others"
+            android:text="@string/other" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvShareLink"
+            style="@style/BottomSheetDialogThemeWhite.TextView"
+            android:drawableTop="@drawable/ic_share_link"
+            android:text="@string/copy_link" />
+
+        <TextView
+            android:id="@+id/tvShareBrowser"
+            style="@style/BottomSheetDialogThemeWhite.TextView"
+            android:drawableTop="@drawable/ic_share_browser"
+            android:text="@string/browser_open" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="15dp"
+        android:background="@color/color_DDDDDD" />
+
+    <TextView
+        android:id="@+id/tvCancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:gravity="center_horizontal"
+        android:text="@string/cancel"
+        android:textColor="@color/color_666666"
+        android:textSize="@dimen/bottom_sheet_cancel_text_size" />
+</LinearLayout>

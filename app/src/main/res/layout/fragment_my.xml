@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.lei.wanandroid.jetpack.State" />
+
+        <variable
+            name="model"
+            type="com.lei.wanandroid.viewmodel.MyViewModel" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary">
+
+            <TextView
+                style="@style/AppTheme.ToolbarTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/bottom_tab_my" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <LinearLayout
+            android:id="@+id/clLoginOrRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/white"
+            android:onClick="@{()->model.toLoginOrUserInfo()}"
+            android:orientation="horizontal"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_default_avatar" />
+
+            <TextView
+                android:id="@+id/tvLoginOrRegister"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="20dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{model.loginOrRegisterOrName}"
+                android:textColor="@color/textColor1"
+                android:textSize="21sp"
+                tools:text="@string/login_or_register" />
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_arrow" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvCollection"
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/white"
+            android:drawableStart="@drawable/user_collection"
+            android:drawablePadding="20dp"
+            android:gravity="center_vertical"
+            android:onClick="@{()->model.toCollect()}"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:text="@string/collection"
+            android:textColor="@color/textColor1"
+            android:textSize="15sp" />
+
+        <include layout="@layout/line_horizontal" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{()->model.toReadArticlesHistory()}"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="47dp"
+                android:layout_weight="1"
+                android:drawableStart="@drawable/ic_article"
+                android:drawablePadding="20dp"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:text="@string/read_article"
+                android:textColor="@color/textColor1"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tvReadArticleCount"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="20dp"
+                android:gravity="center"
+                android:textColor="@color/textColor2"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/white"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="47dp"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:drawableStart="@drawable/ic_night"
+                android:drawablePadding="20dp"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:text="@string/dark_mode"
+                android:textColor="@color/textColor1"
+                android:textSize="15sp" />
+
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:checked="@={model.nightMode}"
+                android:onCheckedChanged="@{(view,bool)->model.setNightMode(bool)}" />
+        </LinearLayout>
+
+        <include layout="@layout/line_horizontal" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:background="@color/white"
+            android:drawableStart="@drawable/ic_feedback"
+            android:drawablePadding="20dp"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:text="@string/feedback"
+            android:textColor="@color/textColor1"
+            android:textSize="15sp" />
+
+        <include layout="@layout/line_horizontal" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:background="@color/white"
+            android:drawableStart="@drawable/ic_setting"
+            android:drawablePadding="20dp"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:text="@string/setting"
+            android:textColor="@color/textColor1"
+            android:textSize="15sp" />
+    </LinearLayout>
+</layout>

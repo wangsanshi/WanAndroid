@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:navigationIcon="@drawable/ic_back_white"
+                app:title="@string/my_collect"
+                app:titleTextAppearance="@style/AppTheme.ToolbarTextStyle"
+                app:titleTextColor="@color/white" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab"
+                style="@style/TabLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabIndicatorFullWidth="false" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/fabMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="@dimen/fab_margin"
+            app:fab_addButtonColorNormal="@color/colorAccent"
+            app:fab_addButtonColorPressed="@color/colorAccentShadow"
+            app:fab_expandDirection="up"
+            app:fab_labelStyle="@style/FabLableStyle">
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabArticle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="@color/white"
+                app:fab_colorPressed="@color/white_pressed"
+                app:fab_icon="@drawable/ic_fab_article_black"
+                app:fab_size="mini"
+                app:fab_title="@string/collect_outer_article" />
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabWebsite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="@color/white"
+                app:fab_colorPressed="@color/white_pressed"
+                app:fab_icon="@drawable/ic_fab_website_black"
+                app:fab_size="mini"
+                app:fab_title="@string/collect_website" />
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

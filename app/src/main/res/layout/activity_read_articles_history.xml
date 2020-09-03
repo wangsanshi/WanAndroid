@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:navigationIcon="@drawable/ic_back_white"
+            app:title="@string/read_article"
+            app:titleTextAppearance="@style/AppTheme.ToolbarTextStyle" />
+
+        <com.lei.wanandroid.ui.helper.ContainerView
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_empty="@layout/layout_empty">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvArticle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.lei.wanandroid.ui.helper.ContainerView>
+
+    </LinearLayout>
+</layout>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/id_menu_statistical"
+        android:icon="@drawable/toolbar_statistical_white"
+        android:title=""
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/id_menu_rank"
+        android:icon="@drawable/toolbar_rank_white"
+        android:title=""
+        app:showAsAction="ifRoom" />
+
+</menu>

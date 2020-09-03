@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="zero">0dp</dimen>
+
+    <dimen name="bottom_sheet_text_size">13sp</dimen>
+    <dimen name="bottom_sheet_cancel_text_size">15sp</dimen>
+    <dimen name="bottom_sheet_drawable_padding">5dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="user_info_appbar_height">278dp</dimen>
+    <dimen name="material_dialog_cornerRadius">16dp</dimen>
+</resources>

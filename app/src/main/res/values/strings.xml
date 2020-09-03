@@ -1,0 +1,126 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">玩Android</string>
+
+    <string name="bottom_tab_home">主页</string>
+    <string name="bottom_tab_project">项目</string>
+    <string name="bottom_tab_todo">便签</string>
+    <string name="bottom_tab_my">我</string>
+
+    <string name="login_or_register">登录/注册</string>
+    <string name="dark_mode">夜间模式</string>
+    <string name="feedback">意见反馈</string>
+    <string name="setting">设置</string>
+    <string name="collection">收藏</string>
+    <string name="read_article">阅读过的文章</string>
+    <string name="add_blog">添加博客</string>
+
+    <string name="register_account">注册账号</string>
+    <string name="login">登录</string>
+    <string name="register">注册</string>
+    <string name="in_the_register">注册中....</string>
+    <string name="in_the_login">登录中....</string>
+    <string name="username">用户名</string>
+    <string name="passeword">密码</string>
+    <string name="username_hint">输入用户名</string>
+    <string name="password_hint">输入密码</string>
+    <string name="repassword_hint">确认密码</string>
+    <string name="welcome_use">欢迎使用</string>
+
+    <string name="recommend">推荐</string>
+    <string name="first_page">首页</string>
+    <string name="square">广场</string>
+    <string name="navigation">导航</string>
+    <string name="question">问答</string>
+    <string name="system">体系</string>
+    <string name="project">项目</string>
+    <string name="official_account">公众号</string>
+    <string name="tool">工具</string>
+
+    <string name="retry">重新加载</string>
+    <string name="network_error" tools:ignore="TypographyEllipsis">网络似乎出了点问题...</string>
+    <string name="no_article">暂无文章</string>
+    <string name="no_todo">这里空空如也</string>
+    <string name="article_detail_page">文章详情页</string>
+    <string name="wechat">微信</string>
+    <string name="friends">朋友圈</string>
+    <string name="other">其它</string>
+    <string name="copy_link">复制链接</string>
+    <string name="browser_open">浏览器打开</string>
+    <string name="cancel">取消</string>
+
+    <string name="top_article">置顶文章</string>
+    <string name="point">·</string>
+
+    <string name="search_text_hint">搜索文章、公众号、热词</string>
+    <string name="search_tab_key_word">关键字</string>
+    <string name="search_article_hint">按关键字搜索(可直接选择热词哦)</string>
+    <string name="search_tab_author">作者</string>
+    <string name="search_author_hint">按作者搜索(仅支持精确搜索哦)</string>
+    <string name="search_tab_wechat_public_account">公众号</string>
+    <string name="search_wechat_public_account_hint">按公众号搜索</string>
+
+    <string name="logout_des">登录后才能使用该功能哦</string>
+    <string name="create_date">创建日期</string>
+    <string name="finish_date">完成日期</string>
+    <string name="todo_title_hint">请输入标题</string>
+    <string name="content">内容</string>
+    <string name="todo_content_hint">在这里输入内容</string>
+    <string name="todo_priority_normal">一般</string>
+    <string name="todo_priority_important">重要</string>
+    <string name="todo_priority_serious">严重</string>
+    <string name="todo_priority_none">无</string>
+    <string name="todo_type_study">学习</string>
+    <string name="todo_type_work">工作</string>
+    <string name="todo_type_life">生活</string>
+    <string name="todo_type_other">其它</string>
+    <string name="todo_finish">已完成</string>
+    <string name="todo_unfinish">未完成</string>
+    <string name="dialog_sure">确定</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="dialog_delete_todo">您确定要删除这条便签吗？</string>
+    <string name="dialog_exit_edit_todo">正在编辑便签，您确定要放弃吗？</string>
+    <string name="dialog_exit_add_todo">已经填写了内容，您确定要放弃吗？</string>
+    <string name="dialog_delete_website">您确定要删除这个网站吗？</string>
+    <string name="dialog_exit_edit_website">正在编辑网站，您确定要放弃吗？</string>
+    <string name="dialog_exit_add_website">已经填写了内容，您确定要放弃吗？</string>
+    <string name="dialog_delete_share_article">你确定删除此条分享内容吗？</string>
+
+    <string name="read_article_count_format">%1d篇</string>
+    <string name="banner">Banner</string>
+    <string name="hot">Hot</string>
+    <string name="zan_format">%1d赞</string>
+
+    <string name="user_info_level">等级</string>
+    <string name="user_info_coin_count">积分</string>
+    <string name="user_info_rank">排名</string>
+    <string name="share_list">分享列表</string>
+    <string name="my_share">我的分享</string>
+    <string name="his_share">他的分享</string>
+    <string name="share_article">分享文章</string>
+    <string name="mini_hint">小提示</string>
+    <string name="share_article_hint_content">如果分享文章链接来源为CSDN、简书，那么此文章会直接通过审核，在对外的分享文章列表中展示；否则，只展示到自己的分享列表。</string>
+    <string name="share_article_title_hint">请输入标题</string>
+    <string name="share_article_link_hint">在这里输入文章链接</string>
+
+    <string name="share">分享</string>
+    <string name="publish">发表</string>
+    <string name="this_article">此文章</string>
+    <string name="deny_see_share_article">只能查看分享文章的作者详情哦</string>
+    <string name="coin_rank">积分排行榜</string>
+    <string name="coin_statistical">积分统计</string>
+    <string name="my_collect">我的收藏</string>
+    <string name="collect_outer_article">收藏站外文章</string>
+    <string name="collect_website">收藏网站</string>
+    <string name="edit_website">编辑网站</string>
+    <string name="title">标题</string>
+    <string name="author">作者</string>
+    <string name="link">链接</string>
+    <string name="name">名称</string>
+    <string name="name_hint">在这里输入名称</string>
+    <string name="title_hint">在这里输入标题</string>
+    <string name="author_hint">在这里输入作者</string>
+    <string name="link_hint">在这里输入链接</string>
+    <string name="collect">收藏</string>
+
+    <string name="common_url_label">常用标签</string>
+</resources>

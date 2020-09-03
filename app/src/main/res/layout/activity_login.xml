@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.lei.wanandroid.jetpack.State" />
+
+        <variable
+            name="model"
+            type="com.lei.wanandroid.viewmodel.LoginViewModel" />
+
+        <variable
+            name="activity"
+            type="com.lei.wanandroid.ui.activitys.LoginActivity" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <ImageButton
+            android:id="@+id/ibtn_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="18dp"
+            android:background="@drawable/ic_close"
+            android:contentDescription="@null"
+            android:onClick="@{()->activity.finish()}"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="18dp"
+            android:onClick="@{()->model.toRegisterAccount()}"
+            android:text="@string/register_account"
+            android:textColor="@color/textColor2"
+            android:textSize="15sp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_welcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:text="@string/welcome_use"
+            android:textColor="@color/textColor1"
+            android:textSize="23sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/ibtn_close" />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/met_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="45dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginEnd="45dp"
+            android:focusable="true"
+            android:hint="@string/username_hint"
+            android:maxLines="1"
+            android:text="@={model.username}"
+            android:textColor="@color/textColor1"
+            android:textColorHint="@color/textColor3"
+            android:textSize="17sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_welcome"
+            app:met_clearButton="true"
+            app:met_floatingLabel="highlight"
+            app:met_floatingLabelText="@string/username" />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/met_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="45dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="45dp"
+            android:hint="@string/password_hint"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:text="@={model.password}"
+            android:textColor="@color/textColor1"
+            android:textColorHint="@color/textColor3"
+            android:textSize="17sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/met_username"
+            app:met_clearButton="true"
+            app:met_floatingLabel="highlight"
+            app:met_floatingLabelText="@string/passeword" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="45dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="45dp"
+            android:background="@drawable/btn_enable_selector"
+            android:enabled="@{model.enable.booleanValue() &amp;&amp; (model.loginUser.state != State.Loading)}"
+            android:gravity="center"
+            android:onClick="@{()->model.login()}"
+            android:text="@{model.loginUser.state == State.Loading ? @string/in_the_login : @string/login}"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/met_password" />
+
+        <TextView
+            android:id="@+id/tvVersion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:text="@{model.versionName}"
+            android:textColor="@color/textColor3"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
