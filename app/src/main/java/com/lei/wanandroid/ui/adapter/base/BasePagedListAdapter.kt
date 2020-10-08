@@ -21,12 +21,12 @@ abstract class BasePagedListAdapter<T, VH : BaseViewHolder>(
     /**
      * 用于保存需要设置点击事件的 item
      */
-    private val childClickViewIds = LinkedHashSet<Int>()
+    protected val childClickViewIds = LinkedHashSet<Int>()
 
     /**
      * 用于保存需要设置长按点击事件的 item
      */
-    private val childLongClickViewIds = LinkedHashSet<Int>()
+    protected val childLongClickViewIds = LinkedHashSet<Int>()
 
     override fun getItemViewType(position: Int): Int {
         return layoutId

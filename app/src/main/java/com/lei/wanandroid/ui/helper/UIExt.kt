@@ -5,9 +5,8 @@ import android.widget.TextView
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.paging.PagedList
+import androidx.lifecycle.switchMap
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.MergeAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -23,10 +22,17 @@ import com.lei.wanandroid.data.bean.ReadArticle
 import com.lei.wanandroid.data.source.URL_LABELS
 import com.lei.wanandroid.data.source.UserContext
 import com.lei.wanandroid.jetpack.State
+import com.lei.wanandroid.jetpack.paging.Listing
 import com.lei.wanandroid.ui.activitys.LoginActivity
 import com.lei.wanandroid.ui.activitys.UserInfoActivity
 import com.lei.wanandroid.ui.activitys.WebViewActivity
-import com.lei.wanandroid.ui.adapter.*
+import com.lei.wanandroid.ui.adapter.LoadMoreAdapter
+import com.lei.wanandroid.ui.adapter.TopArticleHeaderAdapter
+import com.lei.wanandroid.ui.adapter.UrlLabelAdapter
+import com.lei.wanandroid.ui.adapter.base.BasePagedListAdapter
+import com.lei.wanandroid.ui.adapter.base.BaseViewHolder
+import com.lei.wanandroid.ui.adapter.page.CommonArticlePagedListAdapter
+import com.lei.wanandroid.ui.adapter.page.FirstPageArticlePagedListAdapter
 import com.lei.wanandroid.util.ToastUtil
 
 fun setSwipeRefreshLayoutStyle(refreshLayout: SwipeRefreshLayout, enableRefresh: Boolean = true) {
@@ -34,53 +40,45 @@ fun setSwipeRefreshLayoutStyle(refreshLayout: SwipeRefreshLayout, enableRefresh:
     refreshLayout.isEnabled = enableRefresh
 }
 
-fun initCommonArticlePagedList(
+fun initCommonArticlePage(
     fragment: Fragment,
     refreshLayout: SwipeRefreshLayout,
     recyclerView: RecyclerView,
     containerView: ContainerView,
-    refreshState: LiveData<State>,
-    loadMoreState: LiveData<State>,
-    pagedList: LiveData<PagedList<Article>>,
-    retry: () -> Unit,
-    refresh: () -> Unit,
-    clear: LiveData<Unit>?,
+    listingLiveData: LiveData<Listing<Article>>,
     modifyArticleCollectState: (Int, Boolean) -> Unit,
-    needNotifyItemChange: Boolean
+    needNotifyItemChange: Boolean,
+    itemDecoration: RecyclerView.ItemDecoration = getTransparentItemDecoration(),
+    showTopArticle: Boolean = false,
+    clear: LiveData<Unit>? = null,
+    needRefresh: Boolean = true
 ) {
-    val articleAdapter = CommonArticlePagedListAdapter()
-    articleAdapter.onItemClickListener = { _, _, position ->
-        WebViewActivity.toThis(articleToRead(articleAdapter.getItem(position)!!))
-    }
-    articleAdapter.onItemChildClickListener = { _, view, position ->
-        val article = articleAdapter.getItem(position)!!
-        if (view.id == R.id.ivCollect) {
-            modifyArticleCollectStateWithCheckLogin(
-                articleAdapter,
-                article,
-                position,
-                modifyArticleCollectState,
-                needNotifyItemChange
-            )
-        } else if (view.id == R.id.llContainer) {
-            if (article.author.isNotEmpty()) ToastUtil.showShortToast(
-                Utils.getApp().getString(R.string.deny_see_share_article)
-            ) else UserInfoActivity.toThis(article.userId, article.shareUser)
-        }
-    }
-
-    val loadMoreAdapter = LoadMoreAdapter(retry)
-    val adapter = MergeAdapter(articleAdapter, loadMoreAdapter)
+    val articleAdapter = getAdapter(modifyArticleCollectState, needNotifyItemChange, showTopArticle)
+    val loadMoreAdapter = LoadMoreAdapter { listingLiveData.value?.retry?.invoke() }
     recyclerView.layoutManager = DealExceptionLinearLayoutManager(fragment.requireContext())
-    recyclerView.addItemDecoration(getTransparentItemDecoration())
-    recyclerView.adapter = adapter
+    recyclerView.addItemDecoration(itemDecoration)
+    recyclerView.adapter = if (showTopArticle) {
+        MergeAdapter(
+            MergeAdapter.Config.Builder().setIsolateViewTypes(false).build(),
+            TopArticleHeaderAdapter(),
+            articleAdapter,
+            loadMoreAdapter
+        )
+    } else {
+        MergeAdapter(articleAdapter, loadMoreAdapter)
+    }
 
-    refreshLayout.setOnRefreshListener { refresh.invoke() }
-    containerView.errorView?.findViewById<TextView>(R.id.tvRefresh)
-        ?.setOnClickListener { refresh.invoke() }
+    if (needRefresh) {
+        refreshLayout.setOnRefreshListener { listingLiveData.value?.refresh?.invoke() }
+        containerView.errorView?.findViewById<TextView>(R.id.tvRefresh)
+            ?.setOnClickListener { listingLiveData.value?.refresh?.invoke() }
+    }
 
-    loadMoreState.observe(fragment.viewLifecycleOwner, Observer { loadMoreAdapter.setState(it) })
-    refreshState.observe(fragment.viewLifecycleOwner, Observer {
+    listingLiveData.switchMap { it.pagedList }
+        .observe(fragment.viewLifecycleOwner, Observer { articleAdapter.submitList(it) })
+    listingLiveData.switchMap { it.loadMoreState }
+        .observe(fragment.viewLifecycleOwner, Observer { loadMoreAdapter.setState(it) })
+    listingLiveData.switchMap { it.refreshState }.observe(fragment.viewLifecycleOwner, Observer {
         refreshLayout.isRefreshing = it == State.Loading
         when (it) {
             State.Loading -> containerView.showContent()
@@ -91,40 +89,35 @@ fun initCommonArticlePagedList(
         }
     })
 
-    pagedList.observe(fragment.viewLifecycleOwner, Observer {
-        articleAdapter.submitList(it)
-    })
     clear?.observe(fragment.viewLifecycleOwner, Observer { articleAdapter.submitList(null) })
 }
 
-fun initFirstArticlePagedList(
-    fragment: Fragment,
-    refreshLayout: SwipeRefreshLayout,
-    recyclerView: RecyclerView,
-    containerView: ContainerView,
-    refreshState: LiveData<State>,
-    loadMoreState: LiveData<State>,
-    pagedList: LiveData<PagedList<Article>>,
-    retry: () -> Unit,
-    refresh: () -> Unit,
-    isShowTopArticles: MutableLiveData<Boolean>,
-    topArticles: LiveData<List<Article>>,
+private fun getAdapter(
+    modifyArticleCollectState: (Int, Boolean) -> Unit,
+    needNotifyItemChange: Boolean,
+    showTopArticle: Boolean
+): BasePagedListAdapter<Article, BaseViewHolder> {
+    return if (showTopArticle) FirstPageArticlePagedListAdapter()
+        .apply {
+        setAdapterListener(this, modifyArticleCollectState, needNotifyItemChange)
+    } else CommonArticlePagedListAdapter().apply {
+        setAdapterListener(this, modifyArticleCollectState, needNotifyItemChange)
+    }
+}
+
+private fun setAdapterListener(
+    adapter: BasePagedListAdapter<Article, BaseViewHolder>,
     modifyArticleCollectState: (Int, Boolean) -> Unit,
     needNotifyItemChange: Boolean
 ) {
-    val topArticleHeaderAdapter = TopArticleHeaderAdapter { isShowTopArticles.value = false }
-    val topArticlesAdapter = TopArticleAdapter {
-        WebViewActivity.toThis(articleToRead(it))
+    adapter.onItemClickListener = { _, _, position ->
+        WebViewActivity.toThis(articleToRead(adapter.getItem(position)!!))
     }
-    val articleAdapter = CommonArticlePagedListAdapter()
-    articleAdapter.onItemClickListener = { _, _, position ->
-        WebViewActivity.toThis(articleToRead(articleAdapter.getItem(position)!!))
-    }
-    articleAdapter.onItemChildClickListener = { _, view, position ->
-        val article = articleAdapter.getItem(position)!!
+    adapter.onItemChildClickListener = { _, view, position ->
+        val article = adapter.getItem(position)!!
         if (view.id == R.id.ivCollect) {
             modifyArticleCollectStateWithCheckLogin(
-                articleAdapter,
+                adapter,
                 article,
                 position,
                 modifyArticleCollectState,
@@ -136,49 +129,6 @@ fun initFirstArticlePagedList(
             ) else UserInfoActivity.toThis(article.userId, article.shareUser)
         }
     }
-    val loadMoreAdapter = LoadMoreAdapter(retry)
-    val adapter = MergeAdapter(
-        MergeAdapter.Config.Builder().setIsolateViewTypes(false).build(),
-        topArticleHeaderAdapter,
-        topArticlesAdapter,
-        articleAdapter,
-        loadMoreAdapter
-    )
-
-    recyclerView.layoutManager = DealExceptionLinearLayoutManager(fragment.requireContext())
-    recyclerView.addItemDecoration(FirstPageRecyclerViewDecoration())
-    recyclerView.adapter = adapter
-
-    refreshLayout.setOnRefreshListener { refresh.invoke() }
-    containerView.errorView?.findViewById<TextView>(R.id.tvRefresh)
-        ?.setOnClickListener { refresh.invoke() }
-
-    refreshState.observe(fragment.viewLifecycleOwner, Observer {
-        refreshLayout.isRefreshing = it == State.Loading
-        when (it) {
-            State.Loading -> containerView.showContent()
-            State.Failure -> if (articleAdapter.isEmpty() && topArticlesAdapter.isEmpty()) {
-                containerView.showError()
-            }
-            State.SuccessNoData -> if (topArticlesAdapter.isEmpty()) containerView.showEmpty()
-            else -> {
-            }
-        }
-    })
-    topArticles.observe(fragment.viewLifecycleOwner, Observer {
-        topArticleHeaderAdapter.hasData = it.isNotEmpty()
-        topArticlesAdapter.submitList(it)
-    })
-    isShowTopArticles.observe(fragment.viewLifecycleOwner, Observer {
-        if (!it) {
-            adapter.removeAdapter(topArticleHeaderAdapter)
-            adapter.removeAdapter(topArticlesAdapter)
-        }
-    })
-    loadMoreState.observe(fragment.viewLifecycleOwner, Observer { loadMoreAdapter.setState(it) })
-    pagedList.observe(fragment.viewLifecycleOwner, Observer {
-        articleAdapter.submitList(it)
-    })
 }
 
 fun modifyArticleCollectStateWithCheckLogin(

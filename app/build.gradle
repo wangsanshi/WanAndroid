@@ -97,7 +97,6 @@ dependencies {
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.0'
     //paging
     implementation "androidx.paging:paging-runtime:$pagingVersion"
-   // implementation 'androidx.paging:paging-runtime:3.0.0-alpha06'
     //工具
     implementation 'com.blankj:utilcodex:1.28.0'
     //wechat sdk
@@ -107,4 +106,6 @@ dependencies {
     //bugly
     implementation 'com.tencent.bugly:crashreport:3.2.33'
     implementation 'com.tencent.bugly:nativecrashreport:3.7.471'
+    //lottie
+    implementation 'com.airbnb.android:lottie:3.4.2'
 }

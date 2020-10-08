@@ -27,6 +27,8 @@ object RepositoryProviders {
         )
     }
 
+    private val systemRepository by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { SystemRepository() }
+
     fun provideLoginRepository(): LoginRepository {
         return loginRepository
     }
@@ -57,5 +59,9 @@ object RepositoryProviders {
 
     fun provideProjectRepository(): ProjectRepository {
         return projectRepository
+    }
+
+    fun provideSystemRepository(): SystemRepository {
+        return systemRepository
     }
 }

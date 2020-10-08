@@ -15,6 +15,12 @@ val sdf2 = object : ThreadLocal<SimpleDateFormat>() {
     }
 }
 
+val sdf3 = object : ThreadLocal<SimpleDateFormat>() {
+    override fun initialValue(): SimpleDateFormat? {
+        return SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE)
+    }
+}
+
 fun getCurrentMillis() = System.currentTimeMillis()
 
 fun getCurrentDate(sdf: SimpleDateFormat): String {

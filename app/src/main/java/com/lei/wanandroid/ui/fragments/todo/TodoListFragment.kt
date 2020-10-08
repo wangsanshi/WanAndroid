@@ -19,7 +19,7 @@ import com.lei.wanandroid.jetpack.livedata.IStateCallback
 import com.lei.wanandroid.jetpack.livedata.StateOberver
 import com.lei.wanandroid.ui.activitys.TodoDetailActivity
 import com.lei.wanandroid.ui.adapter.LoadMoreAdapter
-import com.lei.wanandroid.ui.adapter.TodoPagedListAdapter
+import com.lei.wanandroid.ui.adapter.page.TodoPagedListAdapter
 import com.lei.wanandroid.ui.helper.setSwipeRefreshLayoutStyle
 import com.lei.wanandroid.viewmodel.TodoViewModel
 
@@ -74,7 +74,8 @@ class TodoListFragment : BaseFragment<TodoViewModel, FragmentTodoListBinding>() 
     }
 
     private fun initContent() {
-        val pagedAdapter = TodoPagedListAdapter()
+        val pagedAdapter =
+            TodoPagedListAdapter()
         pagedAdapter.onItemClickListener = { _, _, position ->
             pagedAdapter.getItem(position)?.let {
                 viewModel.currentTodoLiveData.value = it
@@ -101,9 +102,7 @@ class TodoListFragment : BaseFragment<TodoViewModel, FragmentTodoListBinding>() 
                 getBinding().refreshLayout.isRefreshing = it == State.Loading
                 when (it) {
                     State.Loading -> getBinding().container.showContent()
-                    State.Failure -> if (pagedAdapter.isEmpty()) {
-                        getBinding().container.showError()
-                    }
+                    State.Failure -> if (pagedAdapter.isEmpty()) getBinding().container.showError()
                     State.SuccessNoData -> getBinding().container.showEmpty()
                     else -> {
                     }

@@ -17,7 +17,7 @@ import java.util.concurrent.Executor
 class ProjectRepository(private val ioExecutor: Executor) : BaseRepository() {
 
     fun getProjectClassificationLiveData(): LiveData<List<ProjectClassification>> {
-        return localDataSource.getProjectClassificationLiveData()
+        return localDataSource.getProjectDao().getProjectClassificationLiveData()
     }
 
     suspend fun refreshProjectClassification(refreshState: StateLiveData<Any>? = null) {
@@ -28,7 +28,7 @@ class ProjectRepository(private val ioExecutor: Executor) : BaseRepository() {
                 override fun onSuccess(data: List<ProjectClassification>?) {
                     if (data != null && data.isNotEmpty()) {
                         launchIO {
-                            localDataSource.saveProjectClassification(data)
+                            localDataSource.getProjectDao().saveProjectClassification(data)
                             refreshState?.postSuccess(Any())
                         }
                     } else {
@@ -53,7 +53,7 @@ class ProjectRepository(private val ioExecutor: Executor) : BaseRepository() {
             ioExecutor = ioExecutor
         ) { DefaultRetrofitClient.getService().getProjectArticleList(it, cid) }
         val sourceFactory =
-            localDataSource.getProjectArticleDataSourceFactory(cid)
+            localDataSource.getProjectDao().getProjectArticleDataSourceFactory(cid)
         val livePagedList = getPagedListLiveData(sourceFactory, callback)
         return Listing(
             pagedList = livePagedList,
@@ -65,8 +65,11 @@ class ProjectRepository(private val ioExecutor: Executor) : BaseRepository() {
     }
 
     private suspend fun insertArticleToDb(articles: List<Article>, cid: Int) {
-        localDataSource.saveArticles(articles)
-        localDataSource.saveProjectArticleID(articles.map { ProjectArticleID(cid, it.id) })
+        localDataSource.withTransaction {
+            localDataSource.getArticleDao().saveArticles(articles)
+            localDataSource.getProjectDao()
+                .saveProjectArticleID(articles.map { ProjectArticleID(cid, it.id) })
+        }
     }
 
 }

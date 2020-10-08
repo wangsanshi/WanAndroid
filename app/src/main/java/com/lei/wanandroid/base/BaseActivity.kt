@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import com.lei.wanandroid.jetpack.lifecycle.NetworkManager
 import com.lei.wanandroid.viewmodel.BaseViewModel
 import java.lang.reflect.ParameterizedType
 
@@ -18,6 +19,7 @@ abstract class BaseActivity<VM : BaseViewModel, VDB : ViewDataBinding> : AppComp
         initViewModel()
         initView(savedInstanceState)
         initData()
+        initNetwork()
     }
 
     @LayoutRes
@@ -28,6 +30,10 @@ abstract class BaseActivity<VM : BaseViewModel, VDB : ViewDataBinding> : AppComp
     protected abstract fun initData()
 
     protected abstract fun provideViewModel(): VM
+
+    private fun initNetwork() {
+        NetworkManager().init(this)
+    }
 
     private fun initViewDataBinding() {
         val clazz =

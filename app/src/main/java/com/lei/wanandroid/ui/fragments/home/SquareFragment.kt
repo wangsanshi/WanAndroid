@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.lei.wanandroid.R
 import com.lei.wanandroid.base.BaseLazyFragment
 import com.lei.wanandroid.databinding.FragmentSquareBinding
-import com.lei.wanandroid.ui.helper.initCommonArticlePagedList
+import com.lei.wanandroid.ui.helper.getTransparentItemDecoration
+import com.lei.wanandroid.ui.helper.initCommonArticlePage
 import com.lei.wanandroid.ui.helper.setSwipeRefreshLayoutStyle
 import com.lei.wanandroid.viewmodel.HomeViewModel
 
@@ -25,23 +26,25 @@ class SquareFragment : BaseLazyFragment<HomeViewModel, FragmentSquareBinding>() 
         return ViewModelProviders.of(this).get(HomeViewModel::class.java)
     }
 
-    override fun initLazyData() {
-        initCommonArticlePagedList(
-            this,
-            getBinding().refreshLayout,
-            getBinding().rvArticle,
-            getBinding().container,
-            viewModel.squareArticleRefreshState,
-            viewModel.squareArticleLoadMoreState,
-            viewModel.squareArticlePagedList,
-            { viewModel.retrySquareArticle() },
-            { viewModel.refreshSquareArticles() },
-            null,
-            viewModel::modifyArticleCollectState,
-            false
+    override fun refreshData() {
+        super.refreshData()
+        viewModel.squareArticleListing.value?.refresh?.invoke()
+    }
+
+    override fun initLazy() {
+        initCommonArticlePage(
+            fragment = this,
+            refreshLayout = getBinding().refreshLayout,
+            recyclerView = getBinding().rvArticle,
+            containerView = getBinding().container,
+            listingLiveData = viewModel.squareArticleListing,
+            modifyArticleCollectState = viewModel::modifyArticleCollectState,
+            needNotifyItemChange = false,
+            itemDecoration = getTransparentItemDecoration(),
+            showTopArticle = false,
+            clear = null,
+            needRefresh = true
         )
-        viewModel.initSquareArticles()
-        viewModel.refreshSquareArticles()
     }
 
 }

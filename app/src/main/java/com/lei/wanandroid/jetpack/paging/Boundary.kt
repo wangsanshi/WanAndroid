@@ -6,6 +6,7 @@ import androidx.paging.DataSource
 import androidx.paging.PagedList
 import com.lei.wanandroid.data.bean.*
 import com.lei.wanandroid.jetpack.State
+import com.lei.wanandroid.net.DefaultRetrofitClient
 import com.lei.wanandroid.net.HttpCallback
 import com.lei.wanandroid.net.httpRequest
 import kotlinx.coroutines.GlobalScope
@@ -58,12 +59,12 @@ abstract class BasePageBoundaryCallback<S, D>(
         private const val TAG = "PageBoundaryCallback"
     }
 
-    private var nextPage: Int? = null
+    protected var nextPage: Int? = null
     val refreshState = MutableLiveData<State>()
     val loadState = MutableLiveData<State>()
 
-    private var retry: (() -> Any)? = null
-    private var refresh: () -> Any = { onZeroItemsLoaded() }
+    protected var retry: (() -> Any)? = null
+    protected var refresh: () -> Any = { onZeroItemsLoaded() }
 
     fun retryAllFailed() {
         val prevRetry = retry
@@ -151,7 +152,7 @@ abstract class BasePageBoundaryCallback<S, D>(
         }
     }
 
-    private fun handleResponse(data: List<D>, type: RequestType) {
+    protected fun handleResponse(data: List<D>, type: RequestType) {
         ioExecutor.execute {
             runBlocking {
                 handle(data)
@@ -169,7 +170,7 @@ abstract class BasePageBoundaryCallback<S, D>(
     abstract suspend fun handle(data: List<D>)
 }
 
-class ArticlePageBoundaryCallback(
+open class ArticlePageBoundaryCallback(
     private val articleType: Int,
     private val handleResponse: suspend (List<Article>, Int) -> Unit,
     startPage: Int,
@@ -185,6 +186,44 @@ class ArticlePageBoundaryCallback(
     override fun convert(source: Page<Article>?): Page<Article>? {
         return source
     }
+}
+
+class FirstPageArticlePageBoundaryCallback(
+    handleResponse: suspend (List<Article>, Int) -> Unit,
+    startPage: Int,
+    policy: ApiPagingPolicy,
+    ioExecutor: Executor,
+    request: suspend (Int) -> ApiResponse<Page<Article>>
+) : ArticlePageBoundaryCallback(
+    ARTICLE_LOCAL_TYPE_FIRST_PAGE,
+    handleResponse,
+    startPage,
+    policy,
+    ioExecutor,
+    request
+) {
+    override fun onZeroItemsLoaded() {
+        //首页文章刷新先刷新置顶文章，刷新成功再刷新
+        GlobalScope.launch {
+            refreshState.postValue(State.Loading)
+            httpRequest(object : HttpCallback<List<Article>> {
+                override fun onSuccess(data: List<Article>?) {
+                    data?.let { handleResponse(it, RequestType.INITIAL) }
+                    refreshState.postValue(State.SuccessData)
+                    doSuper()
+                }
+
+                override fun onFailure(code: Int, message: String) {
+                    refreshState.postValue(State.Failure)
+                }
+            }) {
+                DefaultRetrofitClient.getService().getTopArticles()
+            }
+        }
+    }
+
+    private fun doSuper() = super.onZeroItemsLoaded()
+
 }
 
 class TodoPageBoundaryCallback(

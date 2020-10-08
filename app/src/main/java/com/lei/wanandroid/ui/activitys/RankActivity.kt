@@ -13,7 +13,7 @@ import com.lei.wanandroid.R
 import com.lei.wanandroid.base.BaseActivity
 import com.lei.wanandroid.databinding.ActivityRankBinding
 import com.lei.wanandroid.jetpack.State
-import com.lei.wanandroid.ui.adapter.CoinRankAdapter
+import com.lei.wanandroid.ui.adapter.page.CoinRankAdapter
 import com.lei.wanandroid.ui.adapter.LoadMoreAdapter
 import com.lei.wanandroid.ui.helper.getLineItemDecoration
 import com.lei.wanandroid.ui.helper.setSwipeRefreshLayoutStyle

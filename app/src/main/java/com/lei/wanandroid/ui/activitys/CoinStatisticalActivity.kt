@@ -13,8 +13,8 @@ import com.lei.wanandroid.R
 import com.lei.wanandroid.base.BaseActivity
 import com.lei.wanandroid.databinding.ActivityCoinStatisticalBinding
 import com.lei.wanandroid.jetpack.State
-import com.lei.wanandroid.ui.adapter.CoinStatisticalPagedListAdapter
 import com.lei.wanandroid.ui.adapter.LoadMoreAdapter
+import com.lei.wanandroid.ui.adapter.page.CoinStatisticalPagedListAdapter
 import com.lei.wanandroid.ui.helper.getLineItemDecoration
 import com.lei.wanandroid.ui.helper.setSwipeRefreshLayoutStyle
 import com.lei.wanandroid.viewmodel.MyViewModel
@@ -77,7 +77,8 @@ class CoinStatisticalActivity : BaseActivity<MyViewModel, ActivityCoinStatistica
     }
 
     private fun getAdapter(): RecyclerView.Adapter<*> {
-        coinStatisticalAdapter = CoinStatisticalPagedListAdapter()
+        coinStatisticalAdapter =
+            CoinStatisticalPagedListAdapter()
         loadMoreAdapter = LoadMoreAdapter { viewModel.retryCoinStatistical() }
         return MergeAdapter(coinStatisticalAdapter, loadMoreAdapter)
     }

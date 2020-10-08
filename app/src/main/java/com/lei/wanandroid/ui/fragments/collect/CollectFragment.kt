@@ -22,7 +22,7 @@ import com.lei.wanandroid.jetpack.livedata.StateOberver
 import com.lei.wanandroid.ui.activitys.CollectWebsiteActivity
 import com.lei.wanandroid.ui.activitys.LoginActivity
 import com.lei.wanandroid.ui.activitys.WebViewActivity
-import com.lei.wanandroid.ui.adapter.CollectArticlePagedListAdapter
+import com.lei.wanandroid.ui.adapter.page.CollectArticlePagedListAdapter
 import com.lei.wanandroid.ui.adapter.CollectWebsiteAdapter
 import com.lei.wanandroid.ui.adapter.LoadMoreAdapter
 import com.lei.wanandroid.ui.helper.ContainerView
@@ -111,7 +111,8 @@ class CollectFragment : BaseFragment<MyViewModel, FragmentCollectBinding>() {
     }
 
     private fun getCollectArticleAdapter(): CollectArticlePagedListAdapter {
-        val adapter = CollectArticlePagedListAdapter()
+        val adapter =
+            CollectArticlePagedListAdapter()
         adapter.addChildClickViewIds(R.id.ivCollect)
         adapter.onItemClickListener = { _, _, position ->
             WebViewActivity.toThis(collectArticleToRead(adapter.getItem(position)!!))

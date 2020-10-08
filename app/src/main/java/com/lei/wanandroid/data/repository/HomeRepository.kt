@@ -1,13 +1,11 @@
 package com.lei.wanandroid.data.repository
 
 import androidx.lifecycle.switchMap
+import androidx.paging.DataSource
 import com.lei.wanandroid.data.bean.*
-import com.lei.wanandroid.data.repository.base.BaseArticleRepository
+import com.lei.wanandroid.data.repository.base.BaseRepository
 import com.lei.wanandroid.jetpack.livedata.StateLiveData
-import com.lei.wanandroid.jetpack.paging.ApiPagingPolicy
-import com.lei.wanandroid.jetpack.paging.ArticlePageBoundaryCallback
-import com.lei.wanandroid.jetpack.paging.Listing
-import com.lei.wanandroid.jetpack.paging.SearchArticlePageFactory
+import com.lei.wanandroid.jetpack.paging.*
 import com.lei.wanandroid.net.DefaultHttpCallback
 import com.lei.wanandroid.net.DefaultRetrofitClient
 import kotlinx.coroutines.GlobalScope
@@ -19,10 +17,10 @@ import java.util.concurrent.Executor
  * 首页、广场、问答、公众号中的文章使用了本地数据库作缓存
  * 搜索模块的文章直接从网络获取
  */
-class HomeRepository(private val ioExecutor: Executor) : BaseArticleRepository() {
+class HomeRepository(private val ioExecutor: Executor) : BaseRepository() {
 
     //----------------------------------------- Banner -----------------------------------------
-    fun getBannerLiveData() = localDataSource.getBannerLiveData()
+    fun getBannerLiveData() = localDataSource.getBannerDao().getBannerLiveData()
     suspend fun refreshBanners(refreshBannerStateLiveData: StateLiveData<Any>) {
         withContext(ioDispatcher) {
             refreshBannerStateLiveData.postLoading()
@@ -30,7 +28,11 @@ class HomeRepository(private val ioExecutor: Executor) : BaseArticleRepository()
                 DefaultHttpCallback<List<BannerBean>>(sErrorCodeHandler) {
                 override fun onSuccess(data: List<BannerBean>?) {
                     refreshBannerStateLiveData.postSuccess(Any())
-                    data?.let { if (it.isNotEmpty()) launchIO { localDataSource.saveBanners(it) } }
+                    data?.let {
+                        if (it.isNotEmpty()) launchIO {
+                            localDataSource.getBannerDao().saveBanners(it)
+                        }
+                    }
                 }
 
                 override fun onFailure(code: Int, message: String) {
@@ -41,31 +43,44 @@ class HomeRepository(private val ioExecutor: Executor) : BaseArticleRepository()
         }
     }
 
-    //----------------------------------------- 文章相关 -----------------------------------------
-    fun getTopArticlesLiveData() = localDataSource.getTopArticleLiveData()
-
-    suspend fun refreshTopArticles() {
-        withContext(ioDispatcher) {
-            remoteDataSource.getTopArticles(object : DefaultHttpCallback<List<Article>>(
-                sErrorCodeHandler
-            ) {
-                override fun onSuccess(data: List<Article>?) {
-                    data?.let { launchIO { localDataSource.saveArticles(it) } }
-                }
-            })
+    private fun getArticleDataSourceFactoryByType(articleType: Int): DataSource.Factory<Int, Article> {
+        return when (articleType) {
+            ARTICLE_LOCAL_TYPE_FIRST_PAGE -> localDataSource.getArticleDao()
+                .getFirstPageArticleDataSourceFactory()
+            ARTICLE_LOCAL_TYPE_SQUARE -> localDataSource.getArticleDao()
+                .getSquareArticleDataSourceFactory()
+            ARTICLE_LOCAL_TYPE_QUESTION -> localDataSource.getArticleDao()
+                .getQuestionArticleDataSourceFactory()
+            else -> throw IllegalArgumentException("getArticleDataSourceFactoryByType(),articleType=$articleType not impl.")
         }
     }
 
+    private suspend fun saveArticleIDByType(articles: List<Article>, articleType: Int) {
+        when (articleType) {
+            ARTICLE_LOCAL_TYPE_FIRST_PAGE -> localDataSource.getArticleDao()
+                .saveFirstPageArticleID(articles.map { FirstPageArticleID(it.id) })
+            ARTICLE_LOCAL_TYPE_QUESTION -> localDataSource.getArticleDao()
+                .saveQuestionArticleID(articles.map { QuestionArticleID(it.id) })
+            ARTICLE_LOCAL_TYPE_SQUARE -> localDataSource.getArticleDao()
+                .saveSquareArticleID(articles.map { SquareArticleID(it.id) })
+            ARTICLE_LOCAL_TYPE_WECHAT -> localDataSource.getArticleDao()
+                .saveWechatArticleID(articles.map {
+                    WechatArticleID(it.id, it.chapterId)
+                })
+            else -> throw IllegalArgumentException("saveArticleIDByType(),articleType=$articleType not impl.")
+        }
+    }
+
+    //----------------------------------------- 文章相关 -----------------------------------------
+
     fun getFirstPageArticles(): Listing<Article> {
-        val callback = ArticlePageBoundaryCallback(
-            articleType = ARTICLE_LOCAL_TYPE_FIRST_PAGE,
+        val callback = FirstPageArticlePageBoundaryCallback(
             startPage = 0,
             ioExecutor = ioExecutor,
             policy = ApiPagingPolicy.NEXT,
             handleResponse = this::insertArticlesToDdByType
         ) { DefaultRetrofitClient.getService().getArticles(it) }
-        val sourceFactory =
-            localDataSource.getArticlesDataSourceFactory(ARTICLE_LOCAL_TYPE_FIRST_PAGE)
+        val sourceFactory = getArticleDataSourceFactoryByType(ARTICLE_LOCAL_TYPE_FIRST_PAGE)
         val livePagedList = getPagedListLiveData(sourceFactory, callback)
         return Listing(
             pagedList = livePagedList,
@@ -77,12 +92,14 @@ class HomeRepository(private val ioExecutor: Executor) : BaseArticleRepository()
     }
 
     private suspend fun insertArticlesToDdByType(articles: List<Article>, articleType: Int) {
-        insertArticlesToDb(articles)
-        localDataSource.saveArticleID(articles, articleType)
+        localDataSource.withTransaction {
+            insertArticlesToDb(articles)
+            saveArticleIDByType(articles, articleType)
+        }
     }
 
     private suspend fun insertArticlesToDb(articles: List<Article>) {
-        localDataSource.saveArticles(articles)
+        localDataSource.getArticleDao().saveArticles(articles)
     }
 
     fun getSqureArticles(): Listing<Article> {
@@ -93,7 +110,7 @@ class HomeRepository(private val ioExecutor: Executor) : BaseArticleRepository()
             policy = ApiPagingPolicy.NEXT,
             handleResponse = this::insertArticlesToDdByType
         ) { DefaultRetrofitClient.getService().getSquareArticles(it) }
-        val sourceFactory = localDataSource.getArticlesDataSourceFactory(ARTICLE_LOCAL_TYPE_SQUARE)
+        val sourceFactory = getArticleDataSourceFactoryByType(ARTICLE_LOCAL_TYPE_SQUARE)
         val livePagedList = getPagedListLiveData(sourceFactory, callback)
         return Listing(
             pagedList = livePagedList,
@@ -107,13 +124,12 @@ class HomeRepository(private val ioExecutor: Executor) : BaseArticleRepository()
     fun getQuestionArticles(): Listing<Article> {
         val callback = ArticlePageBoundaryCallback(
             articleType = ARTICLE_LOCAL_TYPE_QUESTION,
-            startPage = 0,
+            startPage = 1,
             ioExecutor = ioExecutor,
             policy = ApiPagingPolicy.DEFAULT,
             handleResponse = this::insertArticlesToDdByType
         ) { DefaultRetrofitClient.getService().getQuestions(it) }
-        val sourceFactory =
-            localDataSource.getArticlesDataSourceFactory(ARTICLE_LOCAL_TYPE_QUESTION)
+        val sourceFactory = getArticleDataSourceFactoryByType(ARTICLE_LOCAL_TYPE_QUESTION)
         val livePagedList = getPagedListLiveData(sourceFactory, callback)
         return Listing(
             pagedList = livePagedList,
@@ -128,7 +144,7 @@ class HomeRepository(private val ioExecutor: Executor) : BaseArticleRepository()
         publicAccountsLiveData.postLoading()
         withContext(ioDispatcher) {
             //先从数据库里查
-            val localCaches = localDataSource.getWXPublicAccountList()
+            val localCaches = localDataSource.getWXPublicAccountDao().getWXPublicAccountList()
             if (localCaches.isNotEmpty()) {
                 publicAccountsLiveData.postSuccess(localCaches)
                 return@withContext
@@ -140,7 +156,9 @@ class HomeRepository(private val ioExecutor: Executor) : BaseArticleRepository()
                 override fun onSuccess(data: List<PublicAccount>?) {
                     if (data != null && data.isNotEmpty()) {
                         publicAccountsLiveData.postSuccess(data)
-                        GlobalScope.launch { localDataSource.saveWXPublicAccounts(data) }
+                        launchIO {
+                            localDataSource.getWXPublicAccountDao().saveWXPublicAccounts(data)
+                        }
                     } else {
                         publicAccountsLiveData.postFailure("未获取到公众号列表")
                     }
@@ -163,7 +181,7 @@ class HomeRepository(private val ioExecutor: Executor) : BaseArticleRepository()
             handleResponse = this::insertArticlesToDdByType
         ) { DefaultRetrofitClient.getService().getWechatArticles(wechatAccountID, it) }
         val sourceFactory =
-            localDataSource.getWechatArticlesDataSourceFactory(wechatAccountID)
+            localDataSource.getArticleDao().getWechatArticleDataSourceFactory(wechatAccountID)
         val livePagedList = getPagedListLiveData(sourceFactory, callback)
         return Listing(
             pagedList = livePagedList,
@@ -180,7 +198,7 @@ class HomeRepository(private val ioExecutor: Executor) : BaseArticleRepository()
     suspend fun getHotWords() {
         hotWordsLiveData.postLoading()
         withContext(ioDispatcher) {
-            val localHotWords = localDataSource.getHotWords()
+            val localHotWords = localDataSource.getHotWordDao().getHotWords()
             if (localHotWords.isNotEmpty()) {
                 hotWordsLiveData.postSuccess(localHotWords)
                 return@withContext
@@ -192,7 +210,7 @@ class HomeRepository(private val ioExecutor: Executor) : BaseArticleRepository()
                 override fun onSuccess(data: List<HotWord>?) {
                     if (data != null && data.isNotEmpty()) {
                         hotWordsLiveData.postSuccess(data)
-                        GlobalScope.launch { localDataSource.saveHotWords(data) }
+                        GlobalScope.launch { localDataSource.getHotWordDao().saveHotWords(data) }
                     } else {
                         hotWordsLiveData.postFailure("未获取到热词")
                     }
@@ -264,7 +282,7 @@ class HomeRepository(private val ioExecutor: Executor) : BaseArticleRepository()
 
     fun modifyArticleCollectStateWithLocal(articleId: Int, isCollect: Boolean) {
         launchIO {
-            localDataSource.updateArticleCollectState(articleId, isCollect)
+            localDataSource.getArticleDao().updateArticleCollectState(articleId, isCollect)
             modifyArticleCollectState(articleId, isCollect, false)
         }
     }
@@ -295,7 +313,7 @@ class HomeRepository(private val ioExecutor: Executor) : BaseArticleRepository()
                 override fun onSuccess(data: Any?) {
                     collectStateLiveData?.postSuccess(Any())
                     if (needUpdateLocal) launchIO {
-                        localDataSource.updateArticleCollectState(
+                        localDataSource.getArticleDao().updateArticleCollectState(
                             id,
                             true
                         )
@@ -319,7 +337,7 @@ class HomeRepository(private val ioExecutor: Executor) : BaseArticleRepository()
                 override fun onSuccess(data: Any?) {
                     collectStateLiveData?.postSuccess(Any())
                     if (needUpdateLocal) launchIO {
-                        localDataSource.updateArticleCollectState(
+                        localDataSource.getArticleDao().updateArticleCollectState(
                             id,
                             false
                         )

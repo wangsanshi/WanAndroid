@@ -1,9 +1,7 @@
 package com.lei.wanandroid.ui.adapter
 
-import android.util.Log
 import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
 import com.lei.wanandroid.R
 import com.lei.wanandroid.data.bean.WebSite
@@ -15,55 +13,6 @@ class CollectWebsiteAdapter :
         R.layout.item_collect_website,
         WebSiteItemCallback()
     ) {
-
-    init {
-        registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onChanged() {
-                super.onChanged()
-                Log.e("aaa", "onChanged")
-            }
-
-            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-                super.onItemRangeChanged(positionStart, itemCount)
-                Log.e(
-                    "aaa",
-                    "onItemRangeChanged , positionStart=$positionStart , itemCount=$itemCount"
-                )
-            }
-
-            override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
-                super.onItemRangeChanged(positionStart, itemCount, payload)
-                Log.e(
-                    "aaa",
-                    "onItemRangeChanged, positionStart=$positionStart , itemCount=$itemCount"
-                )
-            }
-
-            override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
-                super.onItemRangeMoved(fromPosition, toPosition, itemCount)
-                Log.e(
-                    "aaa",
-                    "onItemRangeMoved, fromPosition=$fromPosition , toPosition=$toPosition, itemCount=$itemCount"
-                )
-            }
-
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                super.onItemRangeInserted(positionStart, itemCount)
-                Log.e(
-                    "aaa",
-                    "onItemRangeInserted , positionStart=$positionStart , itemCount=$itemCount"
-                )
-            }
-
-            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
-                super.onItemRangeRemoved(positionStart, itemCount)
-                Log.e(
-                    "aaa",
-                    "onItemRangeRemoved , positionStart=$positionStart , itemCount=$itemCount"
-                )
-            }
-        })
-    }
 
     override fun convert(holder: BaseViewHolder, item: WebSite) {
         holder.setText(R.id.tvName, item.name)

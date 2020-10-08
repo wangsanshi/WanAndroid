@@ -60,4 +60,8 @@ interface IRemoteDataSource {
     suspend fun deleteShareArticle(articleId: Int, callback: HttpCallback<Any?>)
 
     suspend fun getProjectClassification(callback: HttpCallback<List<ProjectClassification>>)
+
+    suspend fun getNavigationList(callback: HttpCallback<List<Navigation>>)
+
+    suspend fun getTreeList(callback: HttpCallback<List<Tree>>)
 }

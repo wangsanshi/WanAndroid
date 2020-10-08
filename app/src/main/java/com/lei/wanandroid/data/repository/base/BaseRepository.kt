@@ -36,7 +36,7 @@ abstract class BaseRepository(
 
     companion object {
         private val PAGING_DEFAULT_PAGE_SIZE = 20
-        private val PAGING_DEFAULT_PREFETCH_DISTANCE = 5
+        private val PAGING_DEFAULT_PREFETCH_DISTANCE = 20
 
         //全局errorCode处理
         val sErrorCodeHandler: ErrorCodeHandler = { code, message ->
@@ -51,7 +51,7 @@ abstract class BaseRepository(
             return LivePagedListBuilder(
                 factory, PagedList.Config.Builder()
                     .setPageSize(pageSize)
-                    .setEnablePlaceholders(false)
+                    .setEnablePlaceholders(true)
                     .setPrefetchDistance(prefetchDistance)
                     .build()
             )

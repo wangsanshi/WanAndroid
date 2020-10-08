@@ -42,22 +42,24 @@ class TodoRepository(private val ioExecutor: Executor) : BaseRepository() {
         }
 
         val sourceFactory = when (orderby) {
-            TODO_ORDERBY_FINISH_DATE -> localDataSource.getTodosFactoryByFinishDate(
+            TODO_ORDERBY_FINISH_DATE -> localDataSource.getTodoDao().getTodoDataSourceByFinishDate(
                 status,
                 types,
                 prioritys
             )
-            TODO_ORDERBY_FINISH_DATE_REVERSE -> localDataSource.getTodosFactoryByFinishDateReverse(
+            TODO_ORDERBY_FINISH_DATE_REVERSE -> localDataSource.getTodoDao()
+                .getTodoDataSourceByFinishDateReverse(
+                    status,
+                    types,
+                    prioritys
+                )
+            TODO_ORDERBY_CREATE_DATE -> localDataSource.getTodoDao().getTodoDataSourceByCreateDate(
                 status,
                 types,
                 prioritys
             )
-            TODO_ORDERBY_CREATE_DATE -> localDataSource.getTodosFactoryByCreateDate(
-                status,
-                types,
-                prioritys
-            )
-            else -> localDataSource.getTodosFactoryByCreateDateReverse(status, types, prioritys)
+            else -> localDataSource.getTodoDao()
+                .getTodoDataSourceByCreateDateReverse(status, types, prioritys)
         }
         val livePagedList = getPagedListLiveData(sourceFactory, callback)
 
@@ -71,7 +73,7 @@ class TodoRepository(private val ioExecutor: Executor) : BaseRepository() {
     }
 
     private suspend fun handleResponse(datas: List<Todo>) {
-        localDataSource.saveTodos(datas)
+        localDataSource.getTodoDao().saveTodos(datas)
     }
 
     suspend fun deleteTodo(id: Int, deleteTodoLiveData: StateLiveData<Any>) {
@@ -81,7 +83,7 @@ class TodoRepository(private val ioExecutor: Executor) : BaseRepository() {
                 override fun onSuccess(data: Any?) {
                     deleteTodoLiveData.postSuccess(Any())
                     //删除成功后从本地数据库中删除
-                    launchIO { localDataSource.deleteTodo(id) }
+                    launchIO { localDataSource.getTodoDao().deleteTodo(id) }
                 }
 
                 override fun onFailure(code: Int, message: String) {

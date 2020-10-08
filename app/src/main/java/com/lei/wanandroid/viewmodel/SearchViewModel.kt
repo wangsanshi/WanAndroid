@@ -2,7 +2,6 @@ package com.lei.wanandroid.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.lei.wanandroid.data.bean.Article
 import com.lei.wanandroid.data.bean.HotWord
@@ -25,10 +24,7 @@ class SearchViewModel(application: Application) : BaseViewModel(application) {
     }
 
     //----------------------------------------- 关键字 -----------------------------------------
-    private val keywordListing by lazy { MutableLiveData<Listing<Article>>() }
-    val keywordArticleList = keywordListing.switchMap { it.pagedList }
-    val keywordRefreshState = keywordListing.switchMap { it.refreshState }
-    val keywordLoadMoreState = keywordListing.switchMap { it.loadMoreState }
+    val keywordListingLiveData by lazy { MutableLiveData<Listing<Article>>() }
 
     val hotwordsLiveData = repository.hotWordsLiveData
     val selectedHotWord by lazy { MutableLiveData<HotWord>() }
@@ -39,34 +35,15 @@ class SearchViewModel(application: Application) : BaseViewModel(application) {
 
     fun searchByKeyWord(keyword: String) {
         clearNotify.value = Unit
-        keywordListing.value = repository.searchByKeyWord(keyword)
-    }
-
-    fun refreshKeyWordArticles() {
-        keywordListing.value?.refresh?.invoke()
-    }
-
-    fun retryKeyWordArticles() {
-        keywordListing.value?.retry?.invoke()
+        keywordListingLiveData.value = repository.searchByKeyWord(keyword)
     }
 
     //----------------------------------------- 作者 ------------------------------------------
-    private val authorListing by lazy { MutableLiveData<Listing<Article>>() }
-    val authorArticleList = authorListing.switchMap { it.pagedList }
-    val authorRefreshState = authorListing.switchMap { it.refreshState }
-    val authorLoadMoreState = authorListing.switchMap { it.loadMoreState }
+    val authorListingLiveData by lazy { MutableLiveData<Listing<Article>>() }
 
     fun searchByAuthor(author: String) {
         clearNotify.value = Unit
-        authorListing.value = repository.searchByAuthor(author)
-    }
-
-    fun refreshAuthorArticles() {
-        authorListing.value?.refresh?.invoke()
-    }
-
-    fun retryAuthorArticles() {
-        authorListing.value?.retry?.invoke()
+        authorListingLiveData.value = repository.searchByAuthor(author)
     }
 
     //----------------------------------------- 公众号 -----------------------------------------
@@ -74,10 +51,7 @@ class SearchViewModel(application: Application) : BaseViewModel(application) {
     val selectedPublicAccountLiveData by lazy { MutableLiveData<PublicAccount>() }
     val publicAccountsLiveData by lazy { StateLiveData<List<PublicAccount>>() }
 
-    private val wechatListing by lazy { MutableLiveData<Listing<Article>>() }
-    val wechatPagedList = wechatListing.switchMap { it.pagedList }
-    val wechatRefreshState = wechatListing.switchMap { it.refreshState }
-    val wechatLoadMoreState = wechatListing.switchMap { it.loadMoreState }
+    val wechatListingLiveData by lazy { MutableLiveData<Listing<Article>>() }
 
     fun getPublicAccounts() {
         viewModelScope.launch { repository.getWechatPublicAccounts(publicAccountsLiveData) }
@@ -85,14 +59,6 @@ class SearchViewModel(application: Application) : BaseViewModel(application) {
 
     fun searchByWechatPublicAccount(account: PublicAccount, keyword: String?) {
         clearNotify.value = Unit
-        wechatListing.value = repository.searchByWechat(account.id, keyword)
-    }
-
-    fun refreshWechatArticles() {
-        wechatListing.value?.refresh?.invoke()
-    }
-
-    fun retryWechatArticles() {
-        wechatListing.value?.retry?.invoke()
+        wechatListingLiveData.value = repository.searchByWechat(account.id, keyword)
     }
 }

@@ -10,6 +10,12 @@
         android:id="@+id/bottom_tab_project"
         android:icon="@drawable/icon_bottom_tab_project"
         android:title="@string/bottom_tab_project" />
+
+    <item
+        android:id="@+id/bottom_tab_system"
+        android:icon="@drawable/icon_bottom_tab_system"
+        android:title="@string/bottom_tab_system" />
+
     <item
         android:id="@+id/bottom_tab_todo"
         android:icon="@drawable/icon_bottom_tab_todo"

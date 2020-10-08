@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.lei.wanandroid.R
 import com.lei.wanandroid.base.BaseLazyFragment
 import com.lei.wanandroid.databinding.FragmentFirstpageBinding
-import com.lei.wanandroid.ui.helper.initFirstArticlePagedList
+import com.lei.wanandroid.ui.helper.FirstPageRecyclerViewDecoration
+import com.lei.wanandroid.ui.helper.initCommonArticlePage
 import com.lei.wanandroid.ui.helper.setSwipeRefreshLayoutStyle
 import com.lei.wanandroid.viewmodel.HomeViewModel
 
@@ -26,24 +27,25 @@ class FirstPageFragment : BaseLazyFragment<HomeViewModel, FragmentFirstpageBindi
         setSwipeRefreshLayoutStyle(getBinding().refreshLayout)
     }
 
-    override fun initLazyData() {
-        initFirstArticlePagedList(
-            this,
-            getBinding().refreshLayout,
-            getBinding().rvArticle,
-            getBinding().container,
-            viewModel.articleRefreshState,
-            viewModel.articleLoadMoreState,
-            viewModel.articlesPagedList,
-            { viewModel.retryArticle() },
-            { viewModel.refreshArticles() },
-            viewModel.isShowTopArticles,
-            viewModel.topArticlesLiveData,
-            viewModel::modifyArticleCollectState,
-            false
+    override fun refreshData() {
+        super.refreshData()
+        viewModel.articleListingLiveData.value?.refresh?.invoke()
+    }
+
+    override fun initLazy() {
+        initCommonArticlePage(
+            fragment = this,
+            refreshLayout = getBinding().refreshLayout,
+            recyclerView = getBinding().rvArticle,
+            containerView = getBinding().container,
+            listingLiveData = viewModel.articleListingLiveData,
+            modifyArticleCollectState = viewModel::modifyArticleCollectState,
+            needNotifyItemChange = false,
+            itemDecoration = FirstPageRecyclerViewDecoration(),
+            showTopArticle = true,
+            clear = null,
+            needRefresh = true
         )
-        viewModel.initArticles()
-        viewModel.refreshArticles()
     }
 
 }

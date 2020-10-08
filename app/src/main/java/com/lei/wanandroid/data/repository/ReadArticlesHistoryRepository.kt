@@ -8,7 +8,7 @@ import com.lei.wanandroid.data.repository.base.BaseRepository
 class ReadArticlesHistoryRepository : BaseRepository() {
 
     fun getReadArticlesHistory(): LiveData<PagedList<ReadArticle>> {
-        val factory = localDataSource.getReadArticlesHistoryDataSourceFactory()
+        val factory = localDataSource.getReadArticleDao().getReadArticlesHistoryDataSourceFactory()
         val livePagedList = getPagedListLiveData(factory)
         return livePagedList
     }

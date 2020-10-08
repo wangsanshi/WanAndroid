@@ -4,10 +4,13 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.AlignSelf
 import com.google.android.flexbox.FlexboxLayout
 
 typealias OnSelectedChangeListener<T> = (T) -> Unit
+
+data class SelectItem<T>(var isSelect: Boolean, val data: T)
 
 abstract class SingleSelectedAdapter<T, VH : BaseViewHolder>(
     @LayoutRes layoutId: Int,
@@ -15,6 +18,7 @@ abstract class SingleSelectedAdapter<T, VH : BaseViewHolder>(
 ) :
     BaseQuickAdapter<SelectItem<T>, VH>(layoutId, itemCallback) {
     private var selectedPosition = -1
+    private var recyclerView: RecyclerView? = null
 
     var onSelectChangeListener: OnSelectedChangeListener<T>? = null
 
@@ -74,5 +78,3 @@ abstract class SingleSelectedAdapter<T, VH : BaseViewHolder>(
         })
     }
 }
-
-data class SelectItem<T>(var isSelect: Boolean, val data: T)

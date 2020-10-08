@@ -154,6 +154,12 @@
                     android:textSize="13sp"
                     tools:text="@string/share_list" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:alpha="0.5"
+                    android:background="#DDDDDD" />
+
                 <com.lei.wanandroid.ui.helper.ContainerView
                     android:id="@+id/container"
                     android:layout_width="match_parent"

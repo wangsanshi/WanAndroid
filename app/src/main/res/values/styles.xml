@@ -9,6 +9,13 @@
         <item name="android:windowBackground">@color/color_F3F7FA</item>
     </style>
 
+    <style name="AppTheme.Splash" parent="AppTheme">
+        <!-- 隐藏标题栏 -->
+        <item name="android:windowNoTitle">true</item>
+        <!-- 全屏 -->
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
     <style name="AppTheme.Login" parent="AppTheme">
         <item name="android:windowBackground">@color/white</item>
     </style>
@@ -22,9 +29,7 @@
         <item name="colorPrimaryDark">@color/color_EBEBEB</item>
     </style>
 
-    <style name="AppTheme.UserInfo" parent="AppTheme">
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
+    <style name="AppTheme.UserInfo" parent="AppTheme" />
 
     <style name="AppTheme.Coin" parent="AppTheme">
         <item name="android:windowBackground">@color/white</item>

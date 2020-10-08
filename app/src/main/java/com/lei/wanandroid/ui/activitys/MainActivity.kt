@@ -10,6 +10,7 @@ import com.lei.wanandroid.databinding.ActivityMainBinding
 import com.lei.wanandroid.ui.fragments.home.HomeFragment
 import com.lei.wanandroid.ui.fragments.my.MyFragment
 import com.lei.wanandroid.ui.fragments.project.ProjectFragment
+import com.lei.wanandroid.ui.fragments.system.SystemFragment
 import com.lei.wanandroid.ui.fragments.todo.TodoFragment
 import com.lei.wanandroid.ui.helper.switchFragment
 import com.lei.wanandroid.util.showShortToast
@@ -70,6 +71,14 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
                         R.id.fragment_container
                     )
                 }
+                R.id.bottom_tab_system -> {
+                    currentShowFragmentTag = switchFragment(
+                        SystemFragment::class.java,
+                        supportFragmentManager,
+                        currentShowFragmentTag,
+                        R.id.fragment_container
+                    )
+                }
                 R.id.bottom_tab_my -> {
                     currentShowFragmentTag = switchFragment(
                         MyFragment::class.java,
@@ -119,7 +128,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
 
     private fun changeFabState(@IdRes id: Int, fab: FloatingActionButton) {
         when (id) {
-            R.id.bottom_tab_home, R.id.bottom_tab_project -> {
+            R.id.bottom_tab_home, R.id.bottom_tab_project, R.id.bottom_tab_system -> {
                 fab.setImageResource(R.drawable.ic_fab_send_white)
                 fab.show()
             }

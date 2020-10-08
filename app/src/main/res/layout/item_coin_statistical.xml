@@ -9,22 +9,46 @@
 
     <TextView
         android:id="@+id/tvSerial"
-        android:layout_width="wrap_content"
+        android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textColor="@color/color_999999"
-        android:textSize="11sp"
-        tools:ignore="SmallSp"
+        android:textSize="12sp"
         tools:text="1" />
 
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvReason"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_333333"
+            android:textSize="15sp"
+            tools:text="签到" />
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/color_999999"
+            android:textSize="11sp"
+            tools:ignore="SmallSp"
+            tools:text="2020-09-01 11:39:37" />
+    </LinearLayout>
+
     <TextView
-        android:id="@+id/tvDesc"
+        android:id="@+id/tvCoin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:textColor="@color/color_333333"
-        android:textSize="15sp"
-        tools:text="2020-08-24 00:18:49 签到 , 积分：12 + 7" />
+        android:textColor="@color/colorAccent"
+        android:textSize="17sp"
+        tools:text="+17" />
 </LinearLayout>
 
 

@@ -12,7 +12,8 @@ import com.lei.wanandroid.databinding.FragmentSearchKeyWordBinding
 import com.lei.wanandroid.jetpack.livedata.IStateCallback
 import com.lei.wanandroid.jetpack.livedata.StateOberver
 import com.lei.wanandroid.ui.adapter.HotWordAdapter
-import com.lei.wanandroid.ui.helper.initCommonArticlePagedList
+import com.lei.wanandroid.ui.helper.getTransparentItemDecoration
+import com.lei.wanandroid.ui.helper.initCommonArticlePage
 import com.lei.wanandroid.ui.helper.setSwipeRefreshLayoutStyle
 import com.lei.wanandroid.util.showShortToast
 import com.lei.wanandroid.viewmodel.SearchViewModel
@@ -22,19 +23,18 @@ class SearchKeyWordFragment : BaseLazyFragment<SearchViewModel, FragmentSearchKe
     override fun initView(savedInstanceState: Bundle?) {
         setSwipeRefreshLayoutStyle(getBinding().refreshLayout, false)
         initHotWords(getBinding().rvHotWords)
-        initCommonArticlePagedList(
-            this,
-            getBinding().refreshLayout,
-            getBinding().rvArticle,
-            getBinding().container,
-            viewModel.keywordRefreshState,
-            viewModel.keywordLoadMoreState,
-            viewModel.keywordArticleList,
-            { viewModel.retryKeyWordArticles() },
-            { viewModel.refreshKeyWordArticles() },
-            viewModel.clearNotify,
-            viewModel::modifyArticleCollectState,
-            true
+        initCommonArticlePage(
+            fragment = this,
+            refreshLayout = getBinding().refreshLayout,
+            recyclerView = getBinding().rvArticle,
+            containerView = getBinding().container,
+            listingLiveData = viewModel.keywordListingLiveData,
+            modifyArticleCollectState = viewModel::modifyArticleCollectState,
+            needNotifyItemChange = true,
+            itemDecoration = getTransparentItemDecoration(),
+            showTopArticle = false,
+            clear = viewModel.clearNotify,
+            needRefresh = true
         )
     }
 
@@ -65,12 +65,10 @@ class SearchKeyWordFragment : BaseLazyFragment<SearchViewModel, FragmentSearchKe
             })
         )
         viewModel.selectedHotWord.observe(viewLifecycleOwner, Observer {
-            if (it == null) {
-                adapter.clearSelectedState()
-            }
+            if (it == null) adapter.clearSelectedState()
         })
     }
-
+    
     override fun getLayoutId(): Int {
         return R.layout.fragment_search_key_word
     }
@@ -79,7 +77,7 @@ class SearchKeyWordFragment : BaseLazyFragment<SearchViewModel, FragmentSearchKe
         return ViewModelProviders.of(requireActivity()).get(SearchViewModel::class.java)
     }
 
-    override fun initLazyData() {
+    override fun initLazy() {
         viewModel.getHotWords()
     }
 

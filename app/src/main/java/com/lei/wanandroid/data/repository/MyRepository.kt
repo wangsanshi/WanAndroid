@@ -13,11 +13,13 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.Executor
 
 class MyRepository(private val ioExecutor: Executor) : BaseRepository() {
-    val readArticlesCountLiveData = localDataSource.getReadArticlesCountLiveData()
+    val readArticlesCountLiveData =
+        localDataSource.getReadArticleDao().getReadArticlesCountLiveData()
 
-    fun getCollectWebsitesLiveData() = localDataSource.getWebsitesLiveData()
+    fun getCollectWebsitesLiveData() = localDataSource.getWebsiteDao().getWebsitesLiveData()
 
-    suspend fun clearWebsites() = withContext(ioDispatcher) { localDataSource.clearWebsites() }
+    suspend fun clearWebsites() =
+        withContext(ioDispatcher) { localDataSource.getWebsiteDao().clearWebsites() }
 
     suspend fun refreshCollectWebsite(refreshWebsitesStateLiveData: StateLiveData<Boolean>) {
         withContext(ioDispatcher) {
@@ -28,7 +30,7 @@ class MyRepository(private val ioExecutor: Executor) : BaseRepository() {
                 override fun onSuccess(data: List<WebSite>?) {
                     if (data != null && data.isNotEmpty()) {
                         launchIO {
-                            localDataSource.saveWebsites(data)
+                            localDataSource.getWebsiteDao().saveWebsites(data)
                             refreshWebsitesStateLiveData.postSuccess(true)
                         }
                     } else {
@@ -55,7 +57,7 @@ class MyRepository(private val ioExecutor: Executor) : BaseRepository() {
             ) {
                 override fun onSuccess(data: Any?) {
                     launchIO {
-                        localDataSource.deleteWebsite(id)
+                        localDataSource.getWebsiteDao().deleteWebsite(id)
                         deleteCollectWebsiteLiveData?.postSuccess(Any())
                     }
                 }
@@ -69,12 +71,12 @@ class MyRepository(private val ioExecutor: Executor) : BaseRepository() {
     }
 
     private suspend fun insertArticlesToDb(articles: List<Article>) {
-        localDataSource.saveArticles(articles)
-        localDataSource.saveShareArticleID(articles.map { ShareArticleID(it.id) })
+        localDataSource.getArticleDao().saveArticles(articles)
+        localDataSource.getArticleDao().saveShareArticleID(articles.map { ShareArticleID(it.id) })
     }
 
     suspend fun clearShareArticleIDs() {
-        localDataSource.clearShareArticleIDs()
+        localDataSource.getArticleDao().clearShareArticleIDs()
     }
 
     fun getShareArticleListing(
@@ -94,7 +96,7 @@ class MyRepository(private val ioExecutor: Executor) : BaseRepository() {
                 DefaultRetrofitClient.getService().getShareArticlesByUserId(userId, it)
             }
         }
-        val sourceFactory = localDataSource.getShareArticleDataSourceFactory()
+        val sourceFactory = localDataSource.getArticleDao().getShareArticleDataSourceFactory()
         val livePagedList = getPagedListLiveData(sourceFactory, callback)
 
         return Listing(
@@ -166,7 +168,7 @@ class MyRepository(private val ioExecutor: Executor) : BaseRepository() {
     }
 
     private suspend fun saveCollectArticles(datas: List<CollectArticle>) {
-        localDataSource.saveCollectArticles(datas)
+        localDataSource.getCollectArticleDao().saveCollectArticles(datas)
     }
 
     fun getCollectArticleListing(): Listing<CollectArticle> {
@@ -178,7 +180,8 @@ class MyRepository(private val ioExecutor: Executor) : BaseRepository() {
         ) {
             DefaultRetrofitClient.getService().getCollectArticles(it)
         }
-        val sourceFactory = localDataSource.getCollectArticleDataSourceFactory()
+        val sourceFactory =
+            localDataSource.getCollectArticleDao().getCollectArticleDataSourceFactory()
         val livePagedList = getPagedListLiveData(sourceFactory, callback)
 
         return Listing(
@@ -191,7 +194,7 @@ class MyRepository(private val ioExecutor: Executor) : BaseRepository() {
     }
 
     suspend fun clearCollectArticals() {
-        withContext(ioDispatcher) { localDataSource.clearCollectArticles() }
+        withContext(ioDispatcher) { localDataSource.getCollectArticleDao().clearCollectArticles() }
     }
 
     suspend fun cancelCollectArticleFromMy(
@@ -212,11 +215,12 @@ class MyRepository(private val ioExecutor: Executor) : BaseRepository() {
                         )
                         //originId表示文章的原来id
                         launchIO {
-                            localDataSource.deleteCollectArticleById(id)
-                            if (originId != -1) localDataSource.updateArticleCollectState(
-                                originId,
-                                false
-                            )
+                            localDataSource.getCollectArticleDao().deleteCollectArticleById(id)
+                            if (originId != -1) localDataSource.getArticleDao()
+                                .updateArticleCollectState(
+                                    originId,
+                                    false
+                                )
                             stateLiveData.postSuccess(Any())
                         }
                     }
@@ -245,7 +249,8 @@ class MyRepository(private val ioExecutor: Executor) : BaseRepository() {
                     override fun onSuccess(data: CollectArticle?) {
                         if (data != null) {
                             launchIO {
-                                localDataSource.saveCollectArticles(listOf(data))
+                                localDataSource.getCollectArticleDao()
+                                    .saveCollectArticles(listOf(data))
                                 collectOuterArticleStateLiveData?.postSuccess(Any())
                             }
                         } else {
@@ -272,7 +277,7 @@ class MyRepository(private val ioExecutor: Executor) : BaseRepository() {
             ) {
                 override fun onSuccess(data: WebSite?) {
                     if (data == null) collectWebsiteStateLiveData?.postSuccess(Any()) else launchIO {
-                        localDataSource.saveWebsites(listOf(data))
+                        localDataSource.getWebsiteDao().saveWebsites(listOf(data))
                         collectWebsiteStateLiveData?.postSuccess(Any())
                     }
                 }
@@ -302,7 +307,7 @@ class MyRepository(private val ioExecutor: Executor) : BaseRepository() {
                 ) {
                     override fun onSuccess(data: WebSite?) {
                         if (data == null) updateWebsiteStateLiveData?.postSuccess(Any()) else launchIO {
-                            localDataSource.saveWebsites(listOf(data))
+                            localDataSource.getWebsiteDao().saveWebsites(listOf(data))
                             updateWebsiteStateLiveData?.postSuccess(Any())
                         }
                     }
@@ -326,7 +331,7 @@ class MyRepository(private val ioExecutor: Executor) : BaseRepository() {
             ) {
                 override fun onSuccess(data: Any?) {
                     launchIO {
-                        localDataSource.removeShareArticleID(articleId)
+                        localDataSource.getArticleDao().removeShareArticleID(articleId)
                         deleteShareArticleStateLiveData?.postSuccess(Any())
                     }
                 }

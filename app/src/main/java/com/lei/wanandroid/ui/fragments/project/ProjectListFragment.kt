@@ -1,6 +1,7 @@
 package com.lei.wanandroid.ui.fragments.project
 
 import android.os.Bundle
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,11 +15,8 @@ import com.lei.wanandroid.databinding.FragmentProjectListBinding
 import com.lei.wanandroid.jetpack.State
 import com.lei.wanandroid.ui.activitys.WebViewActivity
 import com.lei.wanandroid.ui.adapter.LoadMoreAdapter
-import com.lei.wanandroid.ui.adapter.ProjectArticlePagedListAdapter
-import com.lei.wanandroid.ui.helper.articleToRead
-import com.lei.wanandroid.ui.helper.getLineItemDecoration
-import com.lei.wanandroid.ui.helper.modifyArticleCollectStateWithCheckLogin
-import com.lei.wanandroid.ui.helper.setSwipeRefreshLayoutStyle
+import com.lei.wanandroid.ui.adapter.page.ProjectArticlePagedListAdapter
+import com.lei.wanandroid.ui.helper.*
 import com.lei.wanandroid.viewmodel.ProjectViewModel
 
 class ProjectListFragment : BaseLazyFragment<ProjectViewModel, FragmentProjectListBinding>() {
@@ -29,6 +27,7 @@ class ProjectListFragment : BaseLazyFragment<ProjectViewModel, FragmentProjectLi
     override fun initView(savedInstanceState: Bundle?) {
         initRefreshLayout(getBinding().refreshLayout)
         initRecyclerView(getBinding().rvList)
+        initContainerView(getBinding().container)
     }
 
     override fun getLayoutId(): Int {
@@ -57,8 +56,16 @@ class ProjectListFragment : BaseLazyFragment<ProjectViewModel, FragmentProjectLi
         recyclerView.adapter = getAdapter()
     }
 
+    private fun initContainerView(containerView: ContainerView) {
+        containerView.errorView?.findViewById<TextView>(R.id.tvRefresh)
+            ?.setOnClickListener { viewModel.refreshProjectArticle() }
+    }
+
     private fun getAdapter(): RecyclerView.Adapter<*> {
-        articleAdapter = ProjectArticlePagedListAdapter(viewLifecycleOwner)
+        articleAdapter =
+            ProjectArticlePagedListAdapter(
+                viewLifecycleOwner
+            )
         articleAdapter.onItemClickListener = { _, _, p ->
             articleAdapter.getItem(p)?.let {
                 WebViewActivity.toThis(articleToRead(it))
@@ -96,7 +103,7 @@ class ProjectListFragment : BaseLazyFragment<ProjectViewModel, FragmentProjectLi
         return ViewModelProviders.of(this).get(ProjectViewModel::class.java)
     }
 
-    override fun initLazyData() {
+    override fun initLazy() {
         viewModel.projectArticlePagedList.observe(viewLifecycleOwner, Observer {
             articleAdapter.submitList(it)
         })

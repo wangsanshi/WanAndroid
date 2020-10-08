@@ -203,4 +203,16 @@ interface ApiService {
         @Path("page") page: Int,
         @Query("cid") cid: Int
     ): ApiResponse<Page<Article>>
+
+    /**
+     * 获取导航数据
+     */
+    @GET("navi/json")
+    suspend fun getNavigationList(): ApiResponse<List<Navigation>>
+
+    /**
+     * 获取体系数据
+     */
+    @GET("tree/json")
+    suspend fun getTreeList(): ApiResponse<List<Tree>>
 }

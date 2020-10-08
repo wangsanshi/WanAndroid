@@ -9,7 +9,7 @@ class WebViewRepository : BaseRepository() {
     suspend fun saveReadArticle(article: ReadArticle) {
         withContext(ioDispatcher) {
             if (userContext.isLogin()) {
-                localDataSource.saveReadArticle(article)
+                localDataSource.getReadArticleDao().saveReadArticle(article)
             }
         }
     }

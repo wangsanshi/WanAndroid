@@ -2,7 +2,6 @@ package com.lei.wanandroid.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.lei.wanandroid.data.bean.Article
 import com.lei.wanandroid.data.bean.PublicAccount
@@ -29,70 +28,22 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
     }
 
     //----------------------------------------- 首页 -----------------------------------------
-    private val articleListing = MutableLiveData<Listing<Article>>()
-    val articlesPagedList = articleListing.switchMap { it.pagedList }
-    val articleRefreshState = articleListing.switchMap { it.refreshState }
-    val articleLoadMoreState = articleListing.switchMap { it.loadMoreState }
-    val isShowTopArticles by lazy { MutableLiveData<Boolean>().apply { value = true } }
-
-    val topArticlesLiveData = repository.getTopArticlesLiveData()
-
-    fun initArticles() {
-        articleListing.value = repository.getFirstPageArticles()
-    }
-
-    fun refreshArticles() {
-        if (isShowTopArticles.value != false) {
-            viewModelScope.launch { repository.refreshTopArticles() }
-        }
-        articleListing.value?.refresh?.invoke()
-    }
-
-    fun retryArticle() {
-        articleListing.value?.retry?.invoke()
+    val articleListingLiveData = MutableLiveData<Listing<Article>>().apply {
+        value = repository.getFirstPageArticles()
     }
 
     //----------------------------------------- 广场 -----------------------------------------
-    private val squareArticleListing = MutableLiveData<Listing<Article>>()
-    val squareArticlePagedList = squareArticleListing.switchMap { it.pagedList }
-    val squareArticleRefreshState = squareArticleListing.switchMap { it.refreshState }
-    val squareArticleLoadMoreState = squareArticleListing.switchMap { it.loadMoreState }
-
-    fun initSquareArticles() {
-        squareArticleListing.value = repository.getSqureArticles()
-    }
-
-    fun refreshSquareArticles() {
-        squareArticleListing.value?.refresh?.invoke()
-    }
-
-    fun retrySquareArticle() {
-        squareArticleListing.value?.retry?.invoke()
+    val squareArticleListing = MutableLiveData<Listing<Article>>().apply {
+        value = repository.getSqureArticles()
     }
 
     //----------------------------------------- 问答 -----------------------------------------
-    private val questionArticleListing = MutableLiveData<Listing<Article>>()
-    val questionArticlePagedList = questionArticleListing.switchMap { it.pagedList }
-    val questionArticleRefreshState = questionArticleListing.switchMap { it.refreshState }
-    val questionArticleLoadMoreState = questionArticleListing.switchMap { it.loadMoreState }
-
-    fun initQuestionArticles() {
-        questionArticleListing.value = repository.getQuestionArticles()
-    }
-
-    fun refreshQuestionArticles() {
-        questionArticleListing.value?.refresh?.invoke()
-    }
-
-    fun retryQuestionArticle() {
-        questionArticleListing.value?.retry?.invoke()
+    val questionArticleListing = MutableLiveData<Listing<Article>>().apply {
+        value = repository.getQuestionArticles()
     }
 
     //----------------------------------------- 公众号 ----------------------------------------
-    private val wechatArticleListing = MutableLiveData<Listing<Article>>()
-    val wechatArticlePagedList = wechatArticleListing.switchMap { it.pagedList }
-    val wechatArticleRefreshState = wechatArticleListing.switchMap { it.refreshState }
-    val wechatArticleLoadMoreState = wechatArticleListing.switchMap { it.loadMoreState }
+    val wechatArticleListing = MutableLiveData<Listing<Article>>()
 
     val publicAccountsLiveData by lazy { StateLiveData<List<PublicAccount>>() }
 
@@ -104,11 +55,4 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
         wechatArticleListing.value = repository.getWechatArticles(wechatID)
     }
 
-    fun refreshWechatArticles() {
-        wechatArticleListing.value?.refresh?.invoke()
-    }
-
-    fun retryWechatArticle() {
-        wechatArticleListing.value?.retry?.invoke()
-    }
 }

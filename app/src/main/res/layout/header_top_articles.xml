@@ -16,6 +16,7 @@
         android:textColor="@color/colorAccent"
         android:textSize="15sp" />
 
+    <!-- 关闭置顶文章这个功能后面再做。。。 -->
     <ImageView
         android:id="@+id/ivClose"
         android:layout_width="wrap_content"
@@ -24,6 +25,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="20dp"
         android:contentDescription="@null"
-        android:src="@drawable/ic_hot_article_close" />
+        android:src="@drawable/ic_hot_article_close"
+        android:visibility="gone" />
 
 </LinearLayout>

@@ -26,7 +26,7 @@ import com.lei.wanandroid.jetpack.State
 import com.lei.wanandroid.jetpack.livedata.IStateCallback
 import com.lei.wanandroid.jetpack.livedata.StateOberver
 import com.lei.wanandroid.ui.adapter.LoadMoreAdapter
-import com.lei.wanandroid.ui.adapter.ShareArticlePagedListAdapter
+import com.lei.wanandroid.ui.adapter.page.ShareArticlePagedListAdapter
 import com.lei.wanandroid.ui.helper.articleToRead
 import com.lei.wanandroid.ui.helper.getTransparentItemDecoration
 import com.lei.wanandroid.ui.helper.modifyArticleCollectStateWithCheckLogin
@@ -160,7 +160,10 @@ class UserInfoActivity : BaseActivity<UserInfoViewModel, ActivityUserInfoBinding
     }
 
     private fun getAdapter(): RecyclerView.Adapter<*> {
-        articleAdapter = ShareArticlePagedListAdapter(viewModel.isLoginUser)
+        articleAdapter =
+            ShareArticlePagedListAdapter(
+                viewModel.isLoginUser
+            )
         articleAdapter.onItemClickListener = { _, _, position ->
             WebViewActivity.toThis(articleToRead(articleAdapter.getItem(position)!!))
         }

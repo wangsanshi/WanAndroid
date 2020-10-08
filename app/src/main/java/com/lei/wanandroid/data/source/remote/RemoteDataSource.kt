@@ -168,4 +168,16 @@ object RemoteDataSource : IRemoteDataSource {
         }
     }
 
+    override suspend fun getNavigationList(callback: HttpCallback<List<Navigation>>) {
+        httpRequest(callback) {
+            DefaultRetrofitClient.getService().getNavigationList()
+        }
+    }
+
+    override suspend fun getTreeList(callback: HttpCallback<List<Tree>>) {
+        httpRequest(callback) {
+            DefaultRetrofitClient.getService().getTreeList()
+        }
+    }
+
 }

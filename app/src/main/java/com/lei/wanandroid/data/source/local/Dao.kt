@@ -29,7 +29,7 @@ interface WXPublicAccountDao {
 @Dao
 interface ReadArticleDao {
     @Query("SELECT * FROM read_article ORDER BY readRime DESC")
-    fun getReadArticlesHistory(): DataSource.Factory<Int, ReadArticle>
+    fun getReadArticlesHistoryDataSourceFactory(): DataSource.Factory<Int, ReadArticle>
 
     @Query("SELECT COUNT(*) FROM read_article ")
     fun getReadArticlesCountLiveData(): LiveData<Int>
@@ -40,11 +40,14 @@ interface ReadArticleDao {
 
 @Dao
 interface ArticleDao {
-    @Query("SELECT * FROM article INNER JOIN first_page_article_id ON first_page_article_id.articleId=article.id ORDER BY publishTime DESC")
+    @Query("SELECT * FROM article INNER JOIN first_page_article_id ON first_page_article_id.articleId=article.id ORDER BY type DESC,publishTime DESC")
     fun getFirstPageArticleDataSourceFactory(): DataSource.Factory<Int, Article>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveFirstPageArticleID(datas: List<FirstPageArticleID>)
+
+    @Query("DELETE FROM first_page_article_id")
+    suspend fun clearFirstPageArticleID()
 
     @Query("SELECT * FROM article INNER JOIN square_article_id ON square_article_id.articleId=article.id ORDER BY publishTime DESC")
     fun getSquareArticleDataSourceFactory(): DataSource.Factory<Int, Article>
@@ -104,28 +107,28 @@ interface HotWordDao {
 @Dao
 interface TodoDao {
     @Query("SELECT * FROM todo WHERE status=:todoStatus AND type IN (:todoTypes) AND priority IN (:todoprioritys) ORDER BY completeDate DESC")
-    fun getTodosByFinishDate(
+    fun getTodoDataSourceByFinishDate(
         todoStatus: Int,
         todoTypes: List<Int>,
         todoprioritys: List<Int>
     ): DataSource.Factory<Int, Todo>
 
     @Query("SELECT * FROM todo WHERE status=:todoStatus AND type IN (:todoTypes) AND priority IN (:todoprioritys) ORDER BY completeDate ASC")
-    fun getTodosByFinishDateReverse(
+    fun getTodoDataSourceByFinishDateReverse(
         todoStatus: Int,
         todoTypes: List<Int>,
         todoprioritys: List<Int>
     ): DataSource.Factory<Int, Todo>
 
     @Query("SELECT * FROM todo WHERE status=:todoStatus AND type IN (:todoTypes) AND priority IN (:todoprioritys) ORDER BY date DESC")
-    fun getTodosByCreateDate(
+    fun getTodoDataSourceByCreateDate(
         todoStatus: Int,
         todoTypes: List<Int>,
         todoprioritys: List<Int>
     ): DataSource.Factory<Int, Todo>
 
     @Query("SELECT * FROM todo WHERE status=:todoStatus AND type IN (:todoTypes) AND priority IN (:todoprioritys) ORDER BY date ASC")
-    fun getTodosByCreateDateReverse(
+    fun getTodoDataSourceByCreateDateReverse(
         todoStatus: Int,
         todoTypes: List<Int>,
         todoprioritys: List<Int>
@@ -181,4 +184,22 @@ interface ProjectDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveProjectArticleID(datas: List<ProjectArticleID>)
+}
+
+@Dao
+interface NavigationDao {
+    @Query("SELECT * FROM navigation")
+    fun getNavigationLiveData(): LiveData<List<Navigation>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveNavigations(datas: List<Navigation>)
+}
+
+@Dao
+interface TreeDao {
+    @Query("SELECT * FROM tree")
+    fun getTreeLiveData(): LiveData<List<Tree>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveTrees(datas: List<Tree>)
 }

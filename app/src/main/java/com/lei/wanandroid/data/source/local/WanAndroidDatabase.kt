@@ -20,7 +20,9 @@ import com.lei.wanandroid.data.bean.*
         CollectArticle::class,
         WebSite::class,
         ProjectClassification::class,
-        BannerBean::class
+        BannerBean::class,
+        Navigation::class,
+        Tree::class
     ),
     version = 1,
     exportSchema = false
@@ -43,4 +45,8 @@ abstract class WanAndroidDatabase : RoomDatabase() {
     abstract fun getCollectArticleDao(): CollectArticleDao
 
     abstract fun getProjectDao(): ProjectDao
+
+    abstract fun getNavigationDao(): NavigationDao
+
+    abstract fun getTreeDao(): TreeDao
 }

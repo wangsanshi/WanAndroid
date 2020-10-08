@@ -13,11 +13,7 @@ import com.tencent.bugly.crashreport.CrashReport
 object UserContext {
     val loginUserLiveData = StateLiveData<User>().apply {
         val loginUser = LocalDataSource.getLoginUser()
-        if (loginUser != null) {
-            postSuccess(loginUser)
-        } else {
-            postFailure("未登录")
-        }
+        if (loginUser != null) postSuccess(loginUser) else postFailure("未登录")
     }
     val registerUserLiveData by lazy { StateLiveData<User>() }
 

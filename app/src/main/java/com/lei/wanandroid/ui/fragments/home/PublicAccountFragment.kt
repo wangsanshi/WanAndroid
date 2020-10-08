@@ -1,20 +1,25 @@
 package com.lei.wanandroid.ui.fragments.home
 
 import android.os.Bundle
+import android.widget.TextView
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lei.wanandroid.R
 import com.lei.wanandroid.base.BaseLazyFragment
+import com.lei.wanandroid.data.bean.Article
 import com.lei.wanandroid.data.bean.PublicAccount
 import com.lei.wanandroid.databinding.FragmentPublicAccountBinding
 import com.lei.wanandroid.jetpack.livedata.IStateCallback
 import com.lei.wanandroid.jetpack.livedata.StateOberver
+import com.lei.wanandroid.jetpack.paging.Listing
 import com.lei.wanandroid.ui.adapter.WechatPublicAccountAdapter
-import com.lei.wanandroid.ui.helper.initCommonArticlePagedList
+import com.lei.wanandroid.ui.helper.ContainerView
+import com.lei.wanandroid.ui.helper.getTransparentItemDecoration
+import com.lei.wanandroid.ui.helper.initCommonArticlePage
 import com.lei.wanandroid.ui.helper.setSwipeRefreshLayoutStyle
-import com.lei.wanandroid.util.showShortToast
 import com.lei.wanandroid.viewmodel.HomeViewModel
 
 /**
@@ -23,7 +28,6 @@ import com.lei.wanandroid.viewmodel.HomeViewModel
 class PublicAccountFragment : BaseLazyFragment<HomeViewModel, FragmentPublicAccountBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
-        setSwipeRefreshLayoutStyle(getBinding().refreshLayout)
     }
 
     override fun getLayoutId(): Int {
@@ -34,24 +38,34 @@ class PublicAccountFragment : BaseLazyFragment<HomeViewModel, FragmentPublicAcco
         return ViewModelProviders.of(this).get(HomeViewModel::class.java)
     }
 
+    override fun initLazy() {
+        initAccounts(getBinding().refreshLayout, getBinding().rvPublicAccount)
+
+        initCommonArticlePage(
+            fragment = this,
+            refreshLayout = getBinding().refreshLayout,
+            recyclerView = getBinding().rvArticle,
+            containerView = getBinding().container,
+            listingLiveData = viewModel.wechatArticleListing,
+            modifyArticleCollectState = viewModel::modifyArticleCollectState,
+            needNotifyItemChange = false,
+            itemDecoration = getTransparentItemDecoration(),
+            showTopArticle = false,
+            clear = null,
+            needRefresh = false
+        )
+
+        viewModel.getPublicAccounts()
+    }
+
     private fun initAccounts(refreshLayout: SwipeRefreshLayout, rvPublicAccount: RecyclerView) {
-        val accountAdapter = WechatPublicAccountAdapter()
-        accountAdapter.onSelectChangeListener = {
-            viewModel.initWechatArticlesByID(it.id)
-            viewModel.refreshWechatArticles()
-        }
-
-        refreshLayout.setOnRefreshListener {
-            if (accountAdapter.isEmpty()) {
-                viewModel.getPublicAccounts()
-            } else {
-                viewModel.refreshWechatArticles()
-            }
-        }
-
+        val accountAdapter = getAccountAdapter()
         rvPublicAccount.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         rvPublicAccount.adapter = accountAdapter
+
+        initRefreshLayout(getBinding().refreshLayout, accountAdapter)
+        initContainerView(getBinding().container, accountAdapter)
 
         viewModel.publicAccountsLiveData.observe(
             viewLifecycleOwner,
@@ -63,33 +77,51 @@ class PublicAccountFragment : BaseLazyFragment<HomeViewModel, FragmentPublicAcco
 
                 override fun onLoading() {
                     refreshLayout.isRefreshing = true
+                    getBinding().container.showContent()
                 }
 
                 override fun onFailure(message: String) {
                     refreshLayout.isRefreshing = false
-                    showShortToast(message)
+                    getBinding().container.showError()
                 }
             })
         )
     }
 
-    override fun initLazyData() {
-        initAccounts(getBinding().refreshLayout, getBinding().rvPublicAccount)
-        initCommonArticlePagedList(
-            this,
-            getBinding().refreshLayout,
-            getBinding().rvArticle,
-            getBinding().container,
-            viewModel.wechatArticleRefreshState,
-            viewModel.wechatArticleLoadMoreState,
-            viewModel.wechatArticlePagedList,
-            { viewModel.retryWechatArticle() },
-            { viewModel.refreshWechatArticles() },
-            null,
-            viewModel::modifyArticleCollectState,
-            false
-        )
-        viewModel.getPublicAccounts()
+    private fun initRefreshLayout(
+        refreshLayout: SwipeRefreshLayout,
+        adapter: WechatPublicAccountAdapter
+    ) {
+        setSwipeRefreshLayoutStyle(refreshLayout)
+        refreshLayout.setOnRefreshListener {
+            refresh(
+                adapter,
+                viewModel.wechatArticleListing
+            )
+        }
     }
 
+    private fun initContainerView(
+        containerView: ContainerView,
+        adapter: WechatPublicAccountAdapter
+    ) {
+        containerView.errorView?.findViewById<TextView>(R.id.tvRefresh)
+            ?.setOnClickListener { refresh(adapter, viewModel.wechatArticleListing) }
+    }
+
+    private fun refresh(
+        adapter: WechatPublicAccountAdapter,
+        listingLiveData: LiveData<Listing<Article>>
+    ) {
+        if (adapter.isEmpty()) viewModel.getPublicAccounts() else listingLiveData.value?.refresh?.invoke()
+    }
+
+    private fun getAccountAdapter(): WechatPublicAccountAdapter {
+        return WechatPublicAccountAdapter().apply {
+            onSelectChangeListener = {
+                viewModel.initWechatArticlesByID(it.id)
+                viewModel.wechatArticleListing.value?.refresh?.invoke()
+            }
+        }
+    }
 }
